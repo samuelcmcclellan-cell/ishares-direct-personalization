@@ -99,7 +99,7 @@ export const OPERATING_MODELS = [
     scalability: "Very High",
     aiDependency: "None",
     maintenance: "High",
-    etfTypes: ["Full iShares lineup", "BlackRock Active ETFs", "Model Portfolio Solutions (MPS)"],
+    etfTypes: ["Full iShares lineup"],
     pros: [
       "Highest personalization without AI dependency",
       "Fully deterministic — same inputs always produce same output",
