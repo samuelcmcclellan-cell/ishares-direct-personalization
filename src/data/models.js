@@ -1,7 +1,7 @@
 export const OPERATING_MODELS = [
   {
     id: 1,
-    name: "Curated Essentials",
+    name: "Core Portfolios",
     tagline: "Simple, fast, proven",
     icon: "LayoutGrid",
     description: "A structured questionnaire routes investors to a small, curated menu of pre-built multi-asset portfolios. Each portfolio includes specific ETF tickers and weights, fully reviewed and approved before launch.",

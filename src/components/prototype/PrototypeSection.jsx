@@ -113,7 +113,7 @@ export function PrototypeSection() {
       <div className="text-center mb-12">
         <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#FEDC00] px-3 py-1 rounded-full mb-4">
           <Sparkles className="w-3 h-3" />
-          Interactive Demo — Model 1: Curated Essentials
+          Interactive Demo — Model 1: Core Portfolios
         </span>
         <h2 className="text-3xl font-bold tracking-tight mb-4">Try It Yourself</h2>
         <p className="text-[#4A4A4A] max-w-2xl mx-auto">
