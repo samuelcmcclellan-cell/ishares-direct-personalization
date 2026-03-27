@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npx vite:*)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(node -e \"import\\(''./src/main.jsx''\\)\")",
+      "Bash(npm run:*)",
+      "WebFetch(domain:www.ishares.com)"
+    ]
+  }
+}
