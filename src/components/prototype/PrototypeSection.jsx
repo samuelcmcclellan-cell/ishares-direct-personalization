@@ -1,10 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
+import { ChevronLeft, Sparkles } from 'lucide-react'
 import { SectionWrapper } from '../layout/SectionWrapper'
 import { Button } from '../shared/Button'
 import { ProgressBar } from './ProgressBar'
 import { GoalStep } from './steps/GoalStep'
+import { GoalFollowUpStep } from './steps/GoalFollowUpStep'
 import { TimelineStep } from './steps/TimelineStep'
 import { RiskStep } from './steps/RiskStep'
 import { RiskDeepDivePrompt, RiskDeepDive } from './steps/RiskDeepDive'
@@ -14,22 +15,30 @@ import { ResultsView } from './ResultsView'
 import { useQuestionnaire } from '../../hooks/useQuestionnaire'
 import { matchPortfolio } from '../../logic/matchingEngine'
 
-function StepRenderer({ step, answers, setAnswer, handleDeepDiveChoice, onEdit }) {
+// Steps where clicking an option auto-advances (no Next button needed)
+const AUTO_ADVANCE_STEPS = new Set(['goal', 'goal-followup', 'timeline', 'risk'])
+
+// Steps that need a Next / submit button
+const NEEDS_NEXT = new Set(['deep-dive', 'preferences'])
+
+function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit }) {
   if (!step) return null
 
   switch (step.id) {
     case 'goal':
-      return <GoalStep step={step} answer={answers.goal} onSelect={v => setAnswer('goal', v)} />
+      return <GoalStep step={step} answer={answers.goal} onSelect={v => onSelect('goal', v)} />
+    case 'goal-followup':
+      return <GoalFollowUpStep step={step} answer={answers['goal-followup']} onSelect={v => onSelect('goal-followup', v)} />
     case 'timeline':
-      return <TimelineStep step={step} answer={answers.timeline} onSelect={v => setAnswer('timeline', v)} />
+      return <TimelineStep step={step} answer={answers.timeline} onSelect={v => onSelect('timeline', v)} />
     case 'risk':
-      return <RiskStep step={step} answer={answers.risk} onSelect={v => setAnswer('risk', v)} />
+      return <RiskStep step={step} answer={answers.risk} onSelect={v => onSelect('risk', v)} />
     case 'deep-dive-prompt':
       return <RiskDeepDivePrompt onChoice={handleDeepDiveChoice} />
     case 'deep-dive':
-      return <RiskDeepDive step={step} answer={answers.deepDive} onSelect={v => setAnswer('deepDive', v)} />
+      return <RiskDeepDive step={step} answer={answers.deepDive} onSelect={v => onSelect('deepDive', v)} />
     case 'preferences':
-      return <PreferencesStep step={step} answer={answers.preferences} onSelect={v => setAnswer('preferences', v)} />
+      return <PreferencesStep step={step} answer={answers.preferences} onSelect={v => onSelect('preferences', v)} />
     case 'review':
       return <ReviewStep answers={answers} onEdit={onEdit} />
     default:
@@ -39,6 +48,7 @@ function StepRenderer({ step, answers, setAnswer, handleDeepDiveChoice, onEdit }
 
 export function PrototypeSection() {
   const q = useQuestionnaire()
+  const autoAdvanceTimer = useRef(null)
 
   const result = useMemo(() => {
     if (!q.showResults) return null
@@ -48,8 +58,28 @@ export function PrototypeSection() {
       risk: q.answers.risk,
       deepDive: q.answers.deepDive,
       preferences: q.answers.preferences,
+      'goal-followup': q.answers['goal-followup'],
     })
   }, [q.showResults, q.answers])
+
+  // Clean up timer on unmount
+  useEffect(() => () => {
+    if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current)
+  }, [])
+
+  const handleSelect = useCallback((stepId, value) => {
+    q.setAnswer(stepId, value)
+
+    const currentId = q.currentStepData?.id
+    if (AUTO_ADVANCE_STEPS.has(currentId)) {
+      // Clear any existing timer
+      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current)
+      // Auto-advance after brief delay to show selection
+      autoAdvanceTimer.current = setTimeout(() => {
+        q.goNext()
+      }, 350)
+    }
+  }, [q])
 
   const canGoNext = () => {
     const step = q.currentStepData
@@ -66,6 +96,9 @@ export function PrototypeSection() {
 
   const isReviewStep = q.currentStepData?.id === 'review'
   const isDeepDivePrompt = q.currentStepData?.id === 'deep-dive-prompt'
+  const currentStepId = q.currentStepData?.id
+  const showNextButton = NEEDS_NEXT.has(currentStepId)
+  const showBackButton = !isDeepDivePrompt && q.currentStep > 0
 
   const handleEdit = (stepId) => {
     const idx = q.activeSteps.findIndex(s => s.id === stepId)
@@ -113,35 +146,36 @@ export function PrototypeSection() {
                 <StepRenderer
                   step={q.currentStepData}
                   answers={q.answers}
-                  setAnswer={q.setAnswer}
+                  onSelect={handleSelect}
                   handleDeepDiveChoice={q.handleDeepDiveChoice}
                   onEdit={handleEdit}
                 />
               </motion.div>
             </AnimatePresence>
 
-            {!isDeepDivePrompt && (
+            {/* Navigation — only show when needed */}
+            {(showBackButton || showNextButton || isReviewStep) && !isDeepDivePrompt && (
               <div className="flex justify-between mt-10 pt-6 border-t border-[#E5E5DD]">
-                <Button
-                  variant="ghost"
-                  onClick={q.goBack}
-                  disabled={q.currentStep === 0}
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  Back
-                </Button>
+                {showBackButton ? (
+                  <Button
+                    variant="ghost"
+                    onClick={q.goBack}
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Back
+                  </Button>
+                ) : <div />}
 
                 {isReviewStep ? (
                   <Button onClick={q.submit}>
                     <Sparkles className="w-4 h-4 mr-2" />
                     Get My Portfolio
                   </Button>
-                ) : (
+                ) : showNextButton ? (
                   <Button onClick={q.goNext} disabled={!canGoNext()}>
                     Next
-                    <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
-                )}
+                ) : null}
               </div>
             )}
           </>

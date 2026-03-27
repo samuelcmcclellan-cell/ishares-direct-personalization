@@ -1,10 +1,10 @@
 import { PORTFOLIOS } from '../data/portfolios'
-import { computeRiskScore, timelineAtLeast } from './scoringUtils'
+import { computeRiskScore, resolveTimeline, timelineAtLeast } from './scoringUtils'
 
 export function matchPortfolio(answers) {
   const riskScore = computeRiskScore(answers)
   const goal = answers.goal?.id
-  const timeline = answers.timeline?.id
+  const timeline = resolveTimeline(answers)
   const preferences = answers.preferences || {}
 
   // Check for preference-based variants first

@@ -4,6 +4,8 @@ export function computeRiskScore(answers) {
   const baseScore = answers.risk?.riskScore || 3
 
   let modifier = 0
+
+  // Deep-dive modifiers
   if (answers.deepDive) {
     if (answers.deepDive['savings-pct']) {
       modifier += answers.deepDive['savings-pct'].modifier || 0
@@ -13,7 +15,21 @@ export function computeRiskScore(answers) {
     }
   }
 
+  // Goal follow-up risk nudge (e.g., wealth-building priorities)
+  const followup = answers['goal-followup']
+  if (followup?.riskNudge) {
+    modifier += followup.riskNudge
+  }
+
   return Math.max(1, Math.min(5, Math.round(baseScore + modifier)))
+}
+
+/**
+ * Resolve effective timeline — if the goal follow-up implies a timeline,
+ * use it as a hint (user can still override on the timeline step).
+ */
+export function resolveTimeline(answers) {
+  return answers.timeline?.id || answers['goal-followup']?.impliedTimeline || null
 }
 
 export function timelineAtLeast(userTimeline, minTimeline) {

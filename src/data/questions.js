@@ -91,4 +91,67 @@ export const STEPS = [
   },
 ]
 
+export const GOAL_FOLLOWUPS = {
+  retirement: {
+    id: "goal-followup",
+    title: "How old are you today?",
+    description: "This helps us estimate your investment horizon to retirement.",
+    type: "single-select",
+    options: [
+      { id: "under-30", label: "Under 30",  impliedTimeline: "20+",  description: "30+ years to grow" },
+      { id: "30-39",    label: "30–39",      impliedTimeline: "20+",  description: "25-35 years to grow" },
+      { id: "40-49",    label: "40–49",      impliedTimeline: "10-20", description: "15-25 years to grow" },
+      { id: "50-59",    label: "50–59",      impliedTimeline: "5-10",  description: "5-15 years to grow" },
+      { id: "60-plus",  label: "60+",        impliedTimeline: "2-5",   description: "Nearing or in retirement" },
+    ],
+  },
+  education: {
+    id: "goal-followup",
+    title: "How many years until the funds are needed?",
+    description: "We'll tailor the portfolio to your education savings timeline.",
+    type: "single-select",
+    options: [
+      { id: "1-3",   label: "1–3 years",   impliedTimeline: "under-2", description: "Starting soon" },
+      { id: "4-6",   label: "4–6 years",   impliedTimeline: "5-10",    description: "Elementary school age" },
+      { id: "7-10",  label: "7–10 years",  impliedTimeline: "5-10",    description: "Time to grow" },
+      { id: "10-plus", label: "10+ years",  impliedTimeline: "10-20",   description: "Long runway" },
+    ],
+  },
+  home: {
+    id: "goal-followup",
+    title: "Roughly how much do you need to save?",
+    description: "Down payment size affects how we balance growth vs. stability.",
+    type: "single-select",
+    options: [
+      { id: "under-50k",   label: "Under $50K",     description: "Starter home or partial down payment" },
+      { id: "50k-100k",    label: "$50K – $100K",    description: "Mid-range target" },
+      { id: "100k-200k",   label: "$100K – $200K",   description: "Significant down payment" },
+      { id: "over-200k",   label: "$200K+",          description: "High-value property" },
+    ],
+  },
+  income: {
+    id: "goal-followup",
+    title: "When do you need income to begin?",
+    description: "This helps us choose the right income-generating mix.",
+    type: "single-select",
+    options: [
+      { id: "immediately",   label: "Immediately",       impliedTimeline: "under-2", description: "I need income now" },
+      { id: "1-2-years",     label: "Within 1–2 years",  impliedTimeline: "under-2", description: "Starting soon" },
+      { id: "3-5-years",     label: "3–5 years",         impliedTimeline: "2-5",     description: "Some time to build" },
+      { id: "5-plus-years",  label: "5+ years out",      impliedTimeline: "5-10",    description: "Growing toward income" },
+    ],
+  },
+  "wealth-building": {
+    id: "goal-followup",
+    title: "What's most important to you?",
+    description: "This helps us calibrate growth vs. stability in your portfolio.",
+    type: "single-select",
+    options: [
+      { id: "max-growth",     label: "Maximum growth — I can handle the ups and downs", riskNudge: 0.5,  description: "Higher risk, higher potential" },
+      { id: "steady-growth",  label: "Steady growth with less volatility",              riskNudge: -0.5, description: "Balanced approach" },
+      { id: "preserve-grow",  label: "Preserve what I have and grow slowly",            riskNudge: -1,   description: "Capital preservation first" },
+    ],
+  },
+}
+
 export const TIMELINE_ORDER = ["under-2", "2-5", "5-10", "10-20", "20+"]
