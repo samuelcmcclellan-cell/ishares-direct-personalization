@@ -1,5 +1,5 @@
 import { useMemo, useRef, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ChevronLeft, Sparkles } from 'lucide-react'
 import { SectionWrapper } from '../layout/SectionWrapper'
 import { Button } from '../shared/Button'
@@ -49,6 +49,7 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
 export function PrototypeSection() {
   const q = useQuestionnaire()
   const autoAdvanceTimer = useRef(null)
+
 
   const result = useMemo(() => {
     if (!q.showResults) return null
@@ -135,23 +136,20 @@ export function PrototypeSection() {
               totalSteps={q.totalSteps}
             />
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={q.currentStepData?.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25 }}
-              >
-                <StepRenderer
-                  step={q.currentStepData}
-                  answers={q.answers}
-                  onSelect={handleSelect}
-                  handleDeepDiveChoice={q.handleDeepDiveChoice}
-                  onEdit={handleEdit}
-                />
-              </motion.div>
-            </AnimatePresence>
+            <motion.div
+              key={q.currentStepData?.id + '-' + q.currentStep}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <StepRenderer
+                step={q.currentStepData}
+                answers={q.answers}
+                onSelect={handleSelect}
+                handleDeepDiveChoice={q.handleDeepDiveChoice}
+                onEdit={handleEdit}
+              />
+            </motion.div>
 
             {/* Navigation — only show when needed */}
             {(showBackButton || showNextButton || isReviewStep) && !isDeepDivePrompt && (
