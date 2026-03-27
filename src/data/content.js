@@ -2,8 +2,8 @@ export const HERO = {
   headline: "Personalized Portfolios at iShares Scale",
   subheadline: "Transform iShares from an ETF provider into a portfolio guidance and personalization engine for self-directed investors.",
   stats: [
-    { value: 1400, suffix: "+", label: "iShares & BlackRock ETFs globally" },
-    { value: 3.5, suffix: "T+", prefix: "$", label: "Assets under management" },
+    { value: 430, suffix: "+", label: "US-listed iShares ETFs" },
+    { value: 3.9, suffix: "T+", prefix: "$", label: "US AUM" },
     { value: 75, suffix: "M+", label: "Self-directed investor accounts in the US" },
   ],
 }
@@ -25,7 +25,7 @@ export const PROBLEM = {
       "Broadest ETF lineup in the industry — index, active, factor, thematic",
       "BlackRock Investment Institute capital market assumptions for portfolio construction",
       "Existing model portfolio infrastructure and advisor relationships",
-      "Trusted brand with $3.5T+ in AUM and institutional credibility",
+      "Trusted brand with $3.9T+ in US AUM and institutional credibility",
     ],
   },
 }
