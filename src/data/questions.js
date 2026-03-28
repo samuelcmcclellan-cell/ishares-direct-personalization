@@ -101,16 +101,16 @@ export const STEPS = [
         options: [
           { id: "under-10", label: "Under 10%",  modifier: 0 },
           { id: "10-25",    label: "10–25%",     modifier: 0 },
-          { id: "25-50",    label: "25–50%",     modifier: -0.5 },
-          { id: "over-50",  label: "Over 50%",   modifier: -1 },
+          { id: "25-50",    label: "25–50%",     modifier: -0.25 },
+          { id: "over-50",  label: "Over 50%",   modifier: -0.5 },
         ],
       },
       {
         id: "experience",
         label: "How long have you been investing in stocks or ETFs?",
         options: [
-          { id: "never",     label: "Never",           modifier: -1 },
-          { id: "under-1",   label: "Less than 1 year", modifier: -0.5 },
+          { id: "never",     label: "Never",           modifier: -0.5 },
+          { id: "under-1",   label: "Less than 1 year", modifier: -0.25 },
           { id: "1-5",       label: "1–5 years",       modifier: 0 },
           { id: "5+",        label: "5+ years",        modifier: 0.5 },
         ],

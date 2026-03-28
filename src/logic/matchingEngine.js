@@ -84,7 +84,7 @@ export function matchPortfolio(answers) {
     const diffA = Math.abs(a.riskScore - riskScore)
     const diffB = Math.abs(b.riskScore - riskScore)
     if (diffA !== diffB) return diffA - diffB
-    return a.riskScore - b.riskScore // break tie toward conservative
+    return b.riskScore - a.riskScore // break tie toward growth
   })
 
   return { portfolio: applyThemeOverlays(candidates[0], themes), riskScore }

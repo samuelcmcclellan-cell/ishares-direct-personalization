@@ -1,5 +1,13 @@
 import { TIMELINE_ORDER } from '../data/questions'
 
+const TIMELINE_UPLIFT = {
+  '20+': 1.0,
+  '10-20': 0.5,
+  '5-10': 0,
+  '2-5': 0,
+  'under-2': 0,
+}
+
 export function computeRiskScore(answers) {
   const baseScore = answers.risk?.riskScore || 3
 
@@ -19,6 +27,12 @@ export function computeRiskScore(answers) {
   const followup = answers['goal-followup']
   if (followup?.riskNudge) {
     modifier += followup.riskNudge
+  }
+
+  // Timeline uplift — long horizons counterbalance inexperience penalties
+  const timeline = resolveTimeline(answers)
+  if (timeline && TIMELINE_UPLIFT[timeline]) {
+    modifier += TIMELINE_UPLIFT[timeline]
   }
 
   return Math.max(1, Math.min(5, Math.round(baseScore + modifier)))
