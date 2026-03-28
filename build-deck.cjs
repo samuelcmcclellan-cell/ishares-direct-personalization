@@ -83,60 +83,58 @@ s1.addShape(pres.shapes.RECTANGLE, {
   fill: { color: C.yellow },
 });
 
-addHeadline(s1, "From ETF Provider to Personalization Engine");
-addSubhead(s1, "Self-directed investors want personalized portfolio guidance — not just product access. iShares has the lineup to deliver it.", { y: 0.95 });
+// Headline — declarative, punchy
+addHeadline(s1, "iShares Can Own the Personalization Layer");
+addSubhead(s1, "75M+ self-directed investors want portfolio guidance — not just product access. iShares has the scale, lineup, and brand to deliver it.", { y: 0.85 });
 
-// Big numbers row
-makeBigNumber(s1, "$3.9T+", "US AUM", 0.3, 1.65, 2.2, C.orange);
-makeBigNumber(s1, "400+", "US-Listed ETFs", 2.7, 1.65, 2.2, C.orange);
-makeBigNumber(s1, "80M+", "Self-Directed\nInvestor Accounts", 5.1, 1.65, 2.2, C.orange);
-makeBigNumber(s1, "#1", "Global ETF\nBrand", 7.5, 1.65, 2.2, C.gold);
-
-// Dark banner — The Gap + The Advantage
-s1.addShape(pres.shapes.RECTANGLE, {
-  x: 0.5, y: 2.85, w: 9.0, h: 1.9,
-  fill: { color: C.darkGray }, rectRadius: 0.1,
-});
-
-// Left column — The Gap
-s1.addText("THE GAP", {
-  x: 0.85, y: 2.95, w: 4.0, h: 0.3,
-  fontSize: 9, color: C.orange, bold: true, fontFace: "Arial", letterSpacing: 2, margin: 0,
-});
-
-const gapItems = [
-  "Investors want guidance but won't pay for a financial advisor",
-  "Existing tools offer product screeners, not portfolio construction",
-  "Schwab, Vanguard, and Wealthfront are racing to own this layer",
+// ── Three stats in a clean row ──
+const statY = 1.55;
+const stats = [
+  { num: "$3.9T+", label: "US AUM", color: C.orange },
+  { num: "430+",   label: "US-Listed ETFs", color: C.orange },
+  { num: "75M+",   label: "Self-Directed Accounts", color: C.orange },
 ];
-gapItems.forEach((item, i) => {
-  s1.addText([
-    { text: "—  ", options: { color: C.orange, bold: true } },
-    { text: item, options: { color: "CCCCCC" } },
-  ], {
-    x: 0.85, y: 3.3 + i * 0.45, w: 4.0, h: 0.42,
-    fontSize: 10, fontFace: "Arial", valign: "top", margin: 0,
+
+// Light divider line behind stats
+s1.addShape(pres.shapes.LINE, {
+  x: 0.5, y: statY + 1.15, w: 9.0, h: 0,
+  line: { color: C.lightGray, width: 1 },
+});
+
+stats.forEach((s, i) => {
+  const x = 0.5 + i * 3.0;
+  const w = 3.0;
+  s1.addText(s.num, {
+    x: x, y: statY, w: w, h: 0.65,
+    fontSize: 40, color: s.color, bold: true, fontFace: "Arial Black", align: "center", margin: 0,
+  });
+  s1.addText(s.label, {
+    x: x, y: statY + 0.6, w: w, h: 0.4,
+    fontSize: 11, color: C.medGray, fontFace: "Arial", align: "center", margin: 0,
   });
 });
 
-// Right column — The iShares Advantage
-s1.addText("THE ISHARES ADVANTAGE", {
-  x: 5.3, y: 2.95, w: 4.0, h: 0.3,
-  fontSize: 9, color: C.green, bold: true, fontFace: "Arial", letterSpacing: 2, margin: 0,
+// ── Core thesis — single clean block ──
+const thesisY = 2.85;
+
+s1.addText("THE OPPORTUNITY", {
+  x: 0.5, y: thesisY, w: 9.0, h: 0.3,
+  fontSize: 9, color: C.orange, bold: true, fontFace: "Arial", letterSpacing: 2, margin: 0,
 });
 
-const advItems = [
-  "Broadest ETF lineup — index, active, factor, thematic",
-  "BlackRock Investment Institute capital market assumptions",
-  "Trusted brand with institutional credibility at scale",
+const thesisPoints = [
+  "Self-directed investors want guidance but won't pay for an advisor — they need a product-embedded solution",
+  "Competitors (Schwab, Vanguard, Wealthfront) are racing to own this layer with robo-advisory tools",
+  "iShares has the broadest ETF lineup, BII capital market assumptions, and institutional credibility to win",
+  "The path: start with simple allocation models, layer in AI-driven personalization over time",
 ];
-advItems.forEach((item, i) => {
+thesisPoints.forEach((item, i) => {
   s1.addText([
-    { text: "+  ", options: { color: C.green, bold: true } },
-    { text: item, options: { color: "CCCCCC" } },
+    { text: i < 2 ? "—  " : "+  ", options: { color: i < 2 ? C.orange : C.green, bold: true } },
+    { text: item, options: { color: C.darkGray } },
   ], {
-    x: 5.3, y: 3.3 + i * 0.45, w: 4.0, h: 0.42,
-    fontSize: 10, fontFace: "Arial", valign: "top", margin: 0,
+    x: 0.5, y: thesisY + 0.35 + i * 0.38, w: 9.0, h: 0.36,
+    fontSize: 10.5, fontFace: "Arial", valign: "top", margin: 0,
   });
 });
 

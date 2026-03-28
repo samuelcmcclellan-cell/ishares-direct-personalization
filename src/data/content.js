@@ -1,10 +1,10 @@
 export const HERO = {
-  headline: "Personalized Portfolios at iShares Scale",
-  subheadline: "Transform iShares from an ETF provider into a portfolio guidance and personalization engine for self-directed investors.",
+  headline: "From ETF Provider to Personalization Engine",
+  subheadline: "A roadmap for iShares to guide self-directed investors from product selection to personalized portfolio construction — starting simple, scaling with AI.",
   stats: [
-    { value: 430, suffix: "+", label: "US-listed iShares ETFs" },
     { value: 3.9, suffix: "T+", prefix: "$", label: "US AUM" },
-    { value: 75, suffix: "M+", label: "Self-directed investor accounts in the US" },
+    { value: 430, suffix: "+", label: "US-Listed ETFs" },
+    { value: 75, suffix: "M+", label: "Self-Directed Accounts" },
   ],
 }
 
@@ -34,21 +34,21 @@ export const VALUE_PILLARS = [
   {
     icon: "Target",
     title: "Goal-Based Allocation",
-    description: "Portfolios built around what investors actually want to achieve — retirement, education, income, growth — not abstract risk buckets.",
+    description: "Portfolios built around what investors actually want to achieve — retirement, education, income, growth.",
   },
   {
     icon: "Blocks",
     title: "iShares Building Blocks",
-    description: "Leveraging the broadest ETF lineup in the industry. Every recommendation uses real iShares and BlackRock ETFs with transparent costs.",
+    description: "Every recommendation uses real iShares and BlackRock ETFs with transparent costs.",
   },
   {
     icon: "Scale",
     title: "Periodically Rebalanced",
-    description: "Portfolios are rules-based but periodically updated by BlackRock's investment team to reflect current capital market assumptions.",
+    description: "Portfolios are rules-based but periodically updated to reflect current capital market assumptions.",
   },
   {
     icon: "Shield",
     title: "Built for Integration",
-    description: "Starts as a standalone experience. Designed with future integration into existing iShares tools — Core Builder, Portfolio Analyzer, Fund Screener.",
+    description: "Designed for future integration into existing iShares tools — Core Builder, Portfolio Analyzer, Fund Screener.",
   },
 ]
