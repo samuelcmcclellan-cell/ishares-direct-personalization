@@ -94,8 +94,6 @@ export const COMPARISON_DIMENSIONS = [
   { key: "etfBuildingBlocks",   label: "ETF Building Blocks",    description: "Products used in portfolios" },
   { key: "personalizationDepth", label: "Personalization",       description: "How tailored the recommendation is" },
   { key: "aiDependency",        label: "AI Dependency",          description: "Reliance on AI/ML systems" },
-  { key: "costToBuild",         label: "Cost to Build",          description: "Relative implementation investment" },
-  { key: "timeToMarket",        label: "Time to Market",         description: "Estimated launch timeline" },
 ]
 
 export const DIMENSION_COLORS = {
