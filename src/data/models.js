@@ -58,12 +58,12 @@ export const OPERATING_MODELS = [
   },
   {
     id: 3,
-    name: "Autonomous AI Advisor",
+    name: "AI Portfolio Engine",
     tagline: "AI-constructed portfolios with ongoing intelligence",
     icon: "BrainCircuit",
-    description: "The most ambitious model: an LLM-powered advisor that profiles each investor through natural conversation, dynamically constructs a bespoke portfolio using BlackRock's full product shelf, and stays engaged post-investment — with a conversational chatbot for questions and an AI agent that proactively sends alerts, rebalancing suggestions, and market insights.",
+    description: "The most ambitious model: an LLM-powered engine that profiles each investor through natural conversation, dynamically constructs a bespoke portfolio using BlackRock's full product shelf, and stays engaged post-investment — with a conversational chatbot for questions and an AI agent that proactively sends alerts, rebalancing suggestions, and market insights.",
     portfolioCount: "Unlimited (AI-generated)",
-    intakeExperience: "LLM conversational advisor",
+    intakeExperience: "LLM conversational experience",
     etfBuildingBlocks: "Full iShares + BlackRock active + alternatives",
     personalizationDepth: "Very High",
     aiDependency: "Very High",
@@ -84,7 +84,7 @@ export const OPERATING_MODELS = [
       "LLM hallucination risk requires careful prompt engineering and output validation",
       "Ongoing AI operations cost (inference, monitoring, safety)",
     ],
-    userJourney: "Investor has a natural conversation with an LLM advisor → AI builds a fully custom portfolio in real-time based on goals, constraints, and preferences → investor receives ongoing chatbot access for questions → AI agent monitors the portfolio and proactively sends alerts, rebalancing suggestions, and relevant market insights.",
+    userJourney: "Investor has a natural conversation with an AI-powered experience → AI builds a fully custom portfolio in real-time based on goals, constraints, and preferences → investor receives ongoing chatbot access for questions → AI agent monitors the portfolio and proactively sends alerts, rebalancing suggestions, and relevant market insights.",
   },
 ]
 

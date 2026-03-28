@@ -41,7 +41,7 @@ export function HeroBlock() {
           {HERO.subheadline}
         </p>
         <a
-          href="/deck/iShares_Direct_Personalization_2_Slides.pdf"
+          href="/deck/iShares_Direct_Personalization_2_Slides.pptx"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-8 inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-lg bg-black text-white hover:bg-[#222] transition-colors"
