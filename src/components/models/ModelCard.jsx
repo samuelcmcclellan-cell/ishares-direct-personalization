@@ -1,7 +1,7 @@
-import { LayoutGrid, MessageSquare, GitBranch } from 'lucide-react'
+import { LayoutGrid, MessageSquare, BrainCircuit } from 'lucide-react'
 import { Badge } from '../shared/Badge'
 
-const ICONS = { LayoutGrid, MessageSquare, GitBranch }
+const ICONS = { LayoutGrid, MessageSquare, BrainCircuit }
 
 export function ModelCard({ model, onClick }) {
   const Icon = ICONS[model.icon]
