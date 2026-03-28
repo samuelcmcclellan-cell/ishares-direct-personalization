@@ -30,32 +30,34 @@ export function PortfolioPieChart({ allocation }) {
     }))
 
   return (
-    <div className="w-full h-80">
-      <ResponsiveContainer>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={70}
-            outerRadius={115}
-            paddingAngle={2}
-            dataKey="value"
-            animationBegin={0}
-            animationDuration={800}
-          >
-            {data.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-        </PieChart>
-      </ResponsiveContainer>
-      <div className="flex flex-wrap justify-center gap-4 mt-2">
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full h-64">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={75}
+              outerRadius={110}
+              paddingAngle={3}
+              dataKey="value"
+              animationBegin={0}
+              animationDuration={800}
+            >
+              {data.map((_, i) => (
+                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="mt-4 mx-auto w-fit grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5">
         {data.map((entry, i) => (
           <div key={i} className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-            <span className="text-xs text-[#4A4A4A]">{entry.name} {entry.value}%</span>
+            <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+            <span className="text-[13px] font-medium text-[#4A4A4A]">{entry.name} {entry.value}%</span>
           </div>
         ))}
       </div>
