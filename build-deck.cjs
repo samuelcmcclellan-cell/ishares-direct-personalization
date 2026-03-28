@@ -77,68 +77,43 @@ function addSource(slide, text, x, y, w) {
 
 const s1 = pres.addSlide();
 
-// Yellow top accent bar
+// Yellow left accent bar
 s1.addShape(pres.shapes.RECTANGLE, {
-  x: 0, y: 0, w: 10.0, h: 0.08,
+  x: 0, y: 0, w: 0.12, h: 5.625,
   fill: { color: C.yellow },
 });
 
-// Headline — declarative, punchy
-addHeadline(s1, "iShares Can Own the Personalization Layer");
-addSubhead(s1, "75M+ self-directed investors want portfolio guidance — not just product access. iShares has the scale, lineup, and brand to deliver it.", { y: 0.85 });
+// Headline — large, clean, commanding
+s1.addText("From ETF Provider\nto Personalization Engine", {
+  x: 0.6, y: 0.5, w: 8.5, h: 1.4,
+  fontSize: 34, color: C.black, bold: true, fontFace: "Arial Black", valign: "top", margin: 0, lineSpacingMultiple: 1.1,
+});
 
-// ── Three stats in a clean row ──
-const statY = 1.55;
-const stats = [
-  { num: "$3.9T+", label: "US AUM", color: C.orange },
-  { num: "430+",   label: "US-Listed ETFs", color: C.orange },
-  { num: "75M+",   label: "Self-Directed Accounts", color: C.orange },
-];
+// Subhead — one crisp sentence
+s1.addText("iShares has the scale, lineup, and brand to guide self-directed investors from product selection to personalized portfolios.", {
+  x: 0.6, y: 2.0, w: 8.0, h: 0.6,
+  fontSize: 14, color: C.medGray, fontFace: "Arial", valign: "top", margin: 0,
+});
 
-// Light divider line behind stats
+// Thin divider
 s1.addShape(pres.shapes.LINE, {
-  x: 0.5, y: statY + 1.15, w: 9.0, h: 0,
-  line: { color: C.lightGray, width: 1 },
+  x: 0.6, y: 2.75, w: 3.0, h: 0,
+  line: { color: C.yellow, width: 3 },
 });
 
-stats.forEach((s, i) => {
-  const x = 0.5 + i * 3.0;
-  const w = 3.0;
-  s1.addText(s.num, {
-    x: x, y: statY, w: w, h: 0.65,
-    fontSize: 40, color: s.color, bold: true, fontFace: "Arial Black", align: "center", margin: 0,
-  });
-  s1.addText(s.label, {
-    x: x, y: statY + 0.6, w: w, h: 0.4,
-    fontSize: 11, color: C.medGray, fontFace: "Arial", align: "center", margin: 0,
-  });
-});
-
-// ── Core thesis — single clean block ──
-const thesisY = 2.85;
-
-s1.addText("THE OPPORTUNITY", {
-  x: 0.5, y: thesisY, w: 9.0, h: 0.3,
-  fontSize: 9, color: C.orange, bold: true, fontFace: "Arial", letterSpacing: 2, margin: 0,
-});
-
-const thesisPoints = [
-  "Self-directed investors want guidance but won't pay for an advisor — they need a product-embedded solution",
-  "Competitors (Schwab, Vanguard, Wealthfront) are racing to own this layer with robo-advisory tools",
-  "iShares has the broadest ETF lineup, BII capital market assumptions, and institutional credibility to win",
-  "The path: start with simple allocation models, layer in AI-driven personalization over time",
+// Three clean thesis points — generous spacing, no bullet clutter
+const points = [
+  "75M+ self-directed investors want guidance but won't pay for an advisor — they need a product-embedded solution.",
+  "Schwab, Vanguard, and Wealthfront are racing to own the personalization layer. iShares isn't in the race yet.",
+  "The path forward: start with simple allocation models, then layer in AI-driven personalization over time.",
 ];
-thesisPoints.forEach((item, i) => {
-  s1.addText([
-    { text: i < 2 ? "—  " : "+  ", options: { color: i < 2 ? C.orange : C.green, bold: true } },
-    { text: item, options: { color: C.darkGray } },
-  ], {
-    x: 0.5, y: thesisY + 0.35 + i * 0.38, w: 9.0, h: 0.36,
-    fontSize: 10.5, fontFace: "Arial", valign: "top", margin: 0,
+points.forEach((item, i) => {
+  s1.addText(item, {
+    x: 0.6, y: 3.05 + i * 0.5, w: 8.5, h: 0.48,
+    fontSize: 12, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
   });
 });
 
-addSource(s1, "Source: BlackRock (US AUM, ETF count as of Q1 2026). Self-directed accounts: Cerulli Associates.", 0.5, 4.55, 9.0);
 addFooter(s1, "1");
 
 
