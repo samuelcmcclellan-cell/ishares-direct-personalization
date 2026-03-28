@@ -131,8 +131,8 @@ export function PrototypeSection() {
   return (
     <SectionWrapper id="prototype" className="bg-[#F5F5EB] border-t border-[#E5E5DD]">
       <div className="text-center mb-12">
-        <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#FEDC00] px-3 py-1 rounded-full mb-4">
-          <Sparkles className="w-3 h-3" />
+        <span className="inline-flex items-center gap-2 text-base font-bold uppercase tracking-wide text-black bg-[#FEDC00] px-5 py-2 rounded-full mb-4 shadow-[0_0_16px_rgba(254,220,0,0.4)]">
+          <Sparkles className="w-5 h-5" />
           Interactive Demo — Model 2: AI-Guided Portfolios
         </span>
         <h2 className="text-3xl font-bold tracking-tight mb-4">Try It Yourself</h2>
