@@ -40,7 +40,7 @@ export function ModelDetailModal({ model, onClose }) {
 
             <div className="flex flex-wrap gap-2">
               <Badge>{model.personalizationDepth} Personalization</Badge>
-              <Badge>{model.implementationCost} Cost</Badge>
+              <Badge>{model.costToBuild} Cost</Badge>
               <Badge color="blue">{model.portfolioCount} Portfolios</Badge>
               <Badge color="gray">{model.timeToMarket}</Badge>
             </div>
@@ -83,12 +83,8 @@ export function ModelDetailModal({ model, onClose }) {
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#7A7A7A] mb-3">ETF Types Used</h3>
-              <div className="flex flex-wrap gap-2">
-                {model.etfTypes.map((type, i) => (
-                  <Badge key={i} color="gray">{type}</Badge>
-                ))}
-              </div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#7A7A7A] mb-3">ETF Building Blocks</h3>
+              <div className="text-sm text-[#4A4A4A]">{model.etfBuildingBlocks}</div>
             </div>
           </div>
         </motion.div>

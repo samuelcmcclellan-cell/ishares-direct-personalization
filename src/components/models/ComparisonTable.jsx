@@ -1,9 +1,24 @@
-import { OPERATING_MODELS, COMPARISON_DIMENSIONS } from '../../data/models'
+import { OPERATING_MODELS, COMPARISON_DIMENSIONS, DIMENSION_COLORS } from '../../data/models'
 import { Badge } from '../shared/Badge'
 
+// Values short enough to badge; longer values render as plain text
+const BADGE_VALUES = new Set([
+  'Low', 'None', '$', 'High', 'Moderate', 'Medium', '$$',
+  'Medium-High', 'Moderate-High', '$$$', 'Very High', '$$$$',
+  '~5', '15–20', '50–200+',
+])
+
+function CellValue({ value }) {
+  if (BADGE_VALUES.has(value)) {
+    return <Badge>{value}</Badge>
+  }
+  return <span className="text-xs text-[#4A4A4A] leading-snug">{value}</span>
+}
+
 export function ComparisonTable() {
-  const colCount = OPERATING_MODELS.length + 1
-  const modelWidth = `${Math.floor(75 / OPERATING_MODELS.length)}%`
+  const modelCount = OPERATING_MODELS.length
+  // Equal widths: label column gets same width as each model column
+  const colWidth = `${Math.floor(100 / (modelCount + 1))}%`
 
   return (
     <div className="mt-16">
@@ -11,9 +26,9 @@ export function ComparisonTable() {
       <div className="overflow-x-auto bg-white border border-[#E5E5DD] rounded-2xl">
         <table className="w-full text-sm table-fixed">
           <colgroup>
-            <col style={{ width: '25%' }} />
+            <col style={{ width: colWidth }} />
             {OPERATING_MODELS.map(model => (
-              <col key={model.id} style={{ width: modelWidth }} />
+              <col key={model.id} style={{ width: colWidth }} />
             ))}
           </colgroup>
           <thead>
@@ -36,23 +51,12 @@ export function ComparisonTable() {
                   <div className="text-xs text-[#B9B9AF] mt-0.5">{dim.description}</div>
                 </td>
                 {OPERATING_MODELS.map(model => (
-                  <td key={model.id} className="py-3.5 px-4">
-                    <Badge>{model[dim.key]}</Badge>
+                  <td key={model.id} className="py-3.5 px-4 align-top">
+                    <CellValue value={model[dim.key]} />
                   </td>
                 ))}
               </tr>
             ))}
-            <tr className="hover:bg-[#FAFAF7] transition-colors">
-              <td className="py-3.5 px-5">
-                <div className="font-medium text-black">ETF Types</div>
-                <div className="text-xs text-[#B9B9AF] mt-0.5">Products used</div>
-              </td>
-              {OPERATING_MODELS.map(model => (
-                <td key={model.id} className="py-3.5 px-4">
-                  <span className="text-xs text-[#4A4A4A]">{model.etfTypes[0]}</span>
-                </td>
-              ))}
-            </tr>
           </tbody>
         </table>
       </div>

@@ -24,7 +24,7 @@ export function ModelCard({ model, onClick }) {
 
       <div className="flex flex-wrap gap-2 mb-4">
         <Badge>{model.personalizationDepth}</Badge>
-        <Badge>{model.implementationCost}</Badge>
+        <Badge>{model.costToBuild}</Badge>
         <Badge color="blue">{model.portfolioCount}</Badge>
       </div>
 
