@@ -52,11 +52,11 @@ export const STEPS = [
     description: "There are no wrong answers — this helps us understand your comfort with volatility.",
     type: "single-select",
     options: [
-      { id: "sell-all",  label: "Sell everything",              riskScore: 1, description: "I can't afford to lose more" },
-      { id: "sell-some", label: "Sell some to limit losses",    riskScore: 2, description: "I'd reduce my exposure" },
-      { id: "hold",      label: "Hold steady and wait it out",  riskScore: 3, description: "Markets recover over time" },
-      { id: "buy-more",  label: "Buy more at lower prices",     riskScore: 4, description: "Volatility is opportunity" },
-      { id: "buy-aggressive", label: "Significantly increase my position", riskScore: 5, description: "I have a very long horizon" },
+      { id: "sell-all",  label: "Sell everything",              riskScore: 2, description: "I can't afford to lose more" },
+      { id: "sell-some", label: "Sell some to limit losses",    riskScore: 4, description: "I'd reduce my exposure" },
+      { id: "hold",      label: "Hold steady and wait it out",  riskScore: 6, description: "Markets recover over time" },
+      { id: "buy-more",  label: "Buy more at lower prices",     riskScore: 8, description: "Volatility is opportunity" },
+      { id: "buy-aggressive", label: "Significantly increase my position", riskScore: 10, description: "I have a very long horizon" },
     ],
   },
   {
@@ -86,7 +86,7 @@ export const STEPS = [
   {
     id: "deep-dive-prompt",
     title: "Want more precise recommendations?",
-    description: "Two quick follow-up questions can help us fine-tune your portfolio.",
+    description: "A few quick follow-up questions can help us fine-tune your portfolio.",
     type: "deep-dive-gate",
   },
   {
@@ -113,6 +113,47 @@ export const STEPS = [
           { id: "under-1",   label: "Less than 1 year", modifier: -0.25 },
           { id: "1-5",       label: "1–5 years",       modifier: 0 },
           { id: "5+",        label: "5+ years",        modifier: 0.5 },
+        ],
+      },
+      {
+        id: "emergency-fund",
+        label: "Do you have 3-6 months of expenses saved outside this investment?",
+        options: [
+          { id: "yes-full",    label: "Yes, 6+ months",       modifier: 1 },
+          { id: "yes-partial", label: "Yes, 3-6 months",      modifier: 0.5 },
+          { id: "building",    label: "I'm still building it", modifier: 0 },
+          { id: "no",          label: "No",                    modifier: -1 },
+        ],
+      },
+      {
+        id: "income-stability",
+        label: "How would you describe your income?",
+        options: [
+          { id: "very-stable", label: "Very stable (salaried, tenured, etc.)",  modifier: 0.5 },
+          { id: "stable",      label: "Stable with some variability",           modifier: 0 },
+          { id: "variable",    label: "Variable (commission, freelance, gig)",  modifier: -0.5 },
+          { id: "uncertain",   label: "Currently uncertain or between jobs",    modifier: -1 },
+        ],
+      },
+      {
+        id: "withdrawal-likelihood",
+        label: "How likely are you to need some of this money unexpectedly in the next 2 years?",
+        options: [
+          { id: "very-unlikely", label: "Very unlikely", modifier: 0.5 },
+          { id: "unlikely",      label: "Unlikely",      modifier: 0 },
+          { id: "possible",      label: "Possible",      modifier: -0.5 },
+          { id: "likely",        label: "Likely",         modifier: -1 },
+        ],
+      },
+      {
+        id: "checking-behavior",
+        label: "If your portfolio dropped 15% this month, how soon would you look at it?",
+        options: [
+          { id: "quarterly",   label: "Whenever my next quarterly review is", modifier: 1 },
+          { id: "monthly",     label: "End of the month",                     modifier: 0.5 },
+          { id: "weekly",      label: "Within a week",                        modifier: 0 },
+          { id: "daily",       label: "I'd check daily",                      modifier: -0.5 },
+          { id: "immediately", label: "Immediately",                          modifier: -1 },
         ],
       },
     ],
@@ -192,9 +233,9 @@ export const GOAL_FOLLOWUPS = {
     description: "This helps us calibrate growth vs. stability in your portfolio.",
     type: "single-select",
     options: [
-      { id: "max-growth",     label: "Maximum growth — I can handle the ups and downs", riskNudge: 0.5,  description: "Higher risk, higher potential" },
-      { id: "steady-growth",  label: "Steady growth with less volatility",              riskNudge: -0.5, description: "Balanced approach" },
-      { id: "preserve-grow",  label: "Preserve what I have and grow slowly",            riskNudge: -1,   description: "Capital preservation first" },
+      { id: "max-growth",     label: "Maximum growth — I can handle the ups and downs", riskNudge: 1,  description: "Higher risk, higher potential" },
+      { id: "steady-growth",  label: "Steady growth with less volatility",              riskNudge: -1, description: "Balanced approach" },
+      { id: "preserve-grow",  label: "Preserve what I have and grow slowly",            riskNudge: -2,   description: "Capital preservation first" },
     ],
   },
 }
@@ -206,9 +247,9 @@ export const GOAL_CONDITIONALS = {
     description: "This helps us understand how this portfolio fits into your overall plan.",
     type: "single-select",
     options: [
-      { id: "significant", label: "Yes, significant savings",  description: "IRA, 401(k), pension, etc.", riskNudge: 0.5 },
+      { id: "significant", label: "Yes, significant savings",  description: "IRA, 401(k), pension, etc.", riskNudge: 1 },
       { id: "some",        label: "Yes, some savings",         description: "Some but not substantial" },
-      { id: "none",        label: "No, this is my primary",    description: "This will be my main retirement fund", riskNudge: -0.5 },
+      { id: "none",        label: "No, this is my primary",    description: "This will be my main retirement fund", riskNudge: -1 },
     ],
   },
   home: {

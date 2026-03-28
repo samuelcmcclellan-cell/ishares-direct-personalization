@@ -54,10 +54,21 @@ export function matchPortfolio(answers) {
   const preferences = answers.preferences || {}
   const themes = answers.themes || {}
 
-  // Check for preference-based variants first
+  // 1. Near-term capital preservation auto-trigger
+  if ((goal === 'home' || goal === 'education') && timeline === 'under-2') {
+    const nearTermMatch = PORTFOLIOS.find(p => p.id === 'near-term-reserve')
+    if (nearTermMatch) return { portfolio: applyThemeOverlays(nearTermMatch, themes), riskScore }
+  }
+
+  // 2. Preference-based variants
   if (preferences.taxAware) {
     const taxMatch = PORTFOLIOS.find(p => p.preference === 'taxAware')
     if (taxMatch) return { portfolio: applyThemeOverlays(taxMatch, themes), riskScore }
+  }
+
+  if (preferences.intl) {
+    const intlMatch = PORTFOLIOS.find(p => p.preference === 'intl')
+    if (intlMatch) return { portfolio: applyThemeOverlays(intlMatch, themes), riskScore }
   }
 
   if (preferences.income || goal === 'income') {
@@ -65,9 +76,21 @@ export function matchPortfolio(answers) {
     if (incomeMatch) return { portfolio: applyThemeOverlays(incomeMatch, themes), riskScore }
   }
 
-  // Filter by goal compatibility
-  let candidates = PORTFOLIOS.filter(p => !p.preference)
+  // 3. Investment style variants
+  const style = answers['investment-style']?.id
+  if (style === 'index') {
+    const indexMatch = PORTFOLIOS.find(p => p.style === 'index')
+    if (indexMatch) return { portfolio: applyThemeOverlays(indexMatch, themes), riskScore }
+  }
+  if (style === 'active') {
+    const activeMatch = PORTFOLIOS.find(p => p.style === 'active')
+    if (activeMatch) return { portfolio: applyThemeOverlays(activeMatch, themes), riskScore }
+  }
 
+  // 4. Core risk-score matching
+  let candidates = PORTFOLIOS.filter(p => !p.preference && !p.style && p.id !== 'near-term-reserve')
+
+  // Filter by goal compatibility
   if (goal) {
     const goalFiltered = candidates.filter(p => p.suitableFor.goals.includes(goal))
     if (goalFiltered.length > 0) candidates = goalFiltered
@@ -79,7 +102,7 @@ export function matchPortfolio(answers) {
     if (timeFiltered.length > 0) candidates = timeFiltered
   }
 
-  // Select closest risk score match, ties break conservative
+  // Select closest risk score match, ties break toward growth
   candidates.sort((a, b) => {
     const diffA = Math.abs(a.riskScore - riskScore)
     const diffB = Math.abs(b.riskScore - riskScore)

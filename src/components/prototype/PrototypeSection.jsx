@@ -109,7 +109,8 @@ export function PrototypeSection() {
     if (step.id === 'financial-picture') return true // sliders always have valid defaults
     if (step.id === 'deep-dive') {
       const dd = q.answers.deepDive || {}
-      return dd['savings-pct'] && dd['experience']
+      return dd['savings-pct'] && dd['experience'] && dd['emergency-fund']
+        && dd['income-stability'] && dd['withdrawal-likelihood'] && dd['checking-behavior']
     }
     return !!q.answers[step.id]
   }

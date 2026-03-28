@@ -7,25 +7,30 @@ import { Button } from '../shared/Button'
 const RISK_COLORS = {
   1: 'bg-[#028E53]',
   2: 'bg-[#028E53]',
-  3: 'bg-[#E6A800]',
-  4: 'bg-[#E87722]',
-  5: 'bg-[#D92B2B]',
+  3: 'bg-[#5EAA3E]',
+  4: 'bg-[#5EAA3E]',
+  5: 'bg-[#E6A800]',
+  6: 'bg-[#E6A800]',
+  7: 'bg-[#E87722]',
+  8: 'bg-[#E87722]',
+  9: 'bg-[#D92B2B]',
+  10: 'bg-[#D92B2B]',
 }
 
 function RiskGauge({ score }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map(i => (
+      <div className="flex gap-0.5">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => (
           <div
             key={i}
-            className={`w-8 h-2 rounded-full transition-all ${
+            className={`w-4 h-2 rounded-full transition-all ${
               i <= score ? RISK_COLORS[score] : 'bg-[#E5E5DD]'
             }`}
           />
         ))}
       </div>
-      <span className="text-xs text-[#7A7A7A]">{score}/5</span>
+      <span className="text-xs text-[#7A7A7A]">{score}/10</span>
     </div>
   )
 }

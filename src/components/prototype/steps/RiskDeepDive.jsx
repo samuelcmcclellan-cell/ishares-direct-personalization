@@ -7,7 +7,7 @@ export function RiskDeepDivePrompt({ onChoice }) {
         <span className="text-2xl">🎯</span>
       </div>
       <h2 className="text-2xl font-bold mb-2">Want more precise recommendations?</h2>
-      <p className="text-[#7A7A7A] mb-8">Two quick follow-up questions can help us fine-tune your portfolio match.</p>
+      <p className="text-[#7A7A7A] mb-8">A few quick follow-up questions can help us fine-tune your portfolio match.</p>
       <div className="flex gap-3 justify-center">
         <button
           onClick={() => onChoice(true)}

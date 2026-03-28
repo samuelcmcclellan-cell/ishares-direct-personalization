@@ -15,11 +15,12 @@ export function computeRiskScore(answers) {
 
   // Deep-dive modifiers
   if (answers.deepDive) {
-    if (answers.deepDive['savings-pct']) {
-      modifier += answers.deepDive['savings-pct'].modifier || 0
-    }
-    if (answers.deepDive['experience']) {
-      modifier += answers.deepDive['experience'].modifier || 0
+    const ddKeys = ['savings-pct', 'experience', 'emergency-fund',
+                    'income-stability', 'withdrawal-likelihood', 'checking-behavior']
+    for (const key of ddKeys) {
+      if (answers.deepDive[key]) {
+        modifier += answers.deepDive[key].modifier || 0
+      }
     }
   }
 
@@ -29,13 +30,19 @@ export function computeRiskScore(answers) {
     modifier += followup.riskNudge
   }
 
+  // Goal-conditional risk nudge (e.g., retirement savings situation)
+  const conditional = answers['goal-conditional']
+  if (conditional?.riskNudge) {
+    modifier += conditional.riskNudge
+  }
+
   // Timeline uplift — long horizons counterbalance inexperience penalties
   const timeline = resolveTimeline(answers)
   if (timeline && TIMELINE_UPLIFT[timeline]) {
     modifier += TIMELINE_UPLIFT[timeline]
   }
 
-  return Math.max(1, Math.min(5, Math.round(baseScore + modifier)))
+  return Math.max(1, Math.min(10, Math.round(baseScore + modifier)))
 }
 
 /**
