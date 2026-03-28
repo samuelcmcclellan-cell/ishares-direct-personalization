@@ -10,6 +10,7 @@ import { FinancialPictureStep } from './steps/FinancialPictureStep'
 import { TimelineStep } from './steps/TimelineStep'
 import { RiskStep } from './steps/RiskStep'
 import { RiskDeepDivePrompt, RiskDeepDive } from './steps/RiskDeepDive'
+import { ThemesStep } from './steps/ThemesStep'
 import { PreferencesStep } from './steps/PreferencesStep'
 import { ReviewStep } from './steps/ReviewStep'
 import { ResultsView } from './ResultsView'
@@ -23,7 +24,7 @@ const AUTO_ADVANCE_STEPS = new Set([
 ])
 
 // Steps that need a Next / submit button
-const NEEDS_NEXT = new Set(['deep-dive', 'preferences', 'financial-picture'])
+const NEEDS_NEXT = new Set(['deep-dive', 'preferences', 'financial-picture', 'themes'])
 
 function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit }) {
   if (!step) return null
@@ -45,6 +46,8 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
       return <RiskStep step={step} answer={answers.risk} onSelect={v => onSelect('risk', v)} />
     case 'investment-style':
       return <GoalFollowUpStep step={step} answer={answers['investment-style']} onSelect={v => onSelect('investment-style', v)} />
+    case 'themes':
+      return <ThemesStep step={step} answer={answers.themes} onSelect={v => onSelect('themes', v)} />
     case 'deep-dive-prompt':
       return <RiskDeepDivePrompt onChoice={handleDeepDiveChoice} />
     case 'deep-dive':
@@ -75,6 +78,7 @@ export function PrototypeSection() {
       'account-type': q.answers['account-type'],
       'investment-style': q.answers['investment-style'],
       'goal-conditional': q.answers['goal-conditional'],
+      themes: q.answers.themes,
     })
   }, [q.showResults, q.answers])
 
@@ -101,6 +105,7 @@ export function PrototypeSection() {
     if (step.id === 'deep-dive-prompt') return false
     if (step.id === 'review') return false
     if (step.id === 'preferences') return true
+    if (step.id === 'themes') return true
     if (step.id === 'financial-picture') return true // sliders always have valid defaults
     if (step.id === 'deep-dive') {
       const dd = q.answers.deepDive || {}

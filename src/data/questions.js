@@ -71,6 +71,19 @@ export const STEPS = [
     ],
   },
   {
+    id: "themes",
+    title: "Are you interested in any investment themes?",
+    description: "Optional — select any themes you'd like reflected in your portfolio.",
+    type: "multi-select",
+    options: [
+      { id: "ai",            label: "Artificial Intelligence",   icon: "Brain",       description: "Companies driving the AI revolution" },
+      { id: "clean-energy",   label: "Clean Energy",             icon: "Zap",         description: "Renewable energy and sustainability" },
+      { id: "innovation",    label: "Innovation & Disruption",  icon: "Lightbulb",   description: "Companies transforming industries" },
+      { id: "dividend",      label: "Dividend Growers",         icon: "TrendingUp",  description: "Companies with rising dividend track records" },
+      { id: "none",          label: "No thematic preference",   icon: "MinusCircle", description: "Stick with broad market exposure" },
+    ],
+  },
+  {
     id: "deep-dive-prompt",
     title: "Want more precise recommendations?",
     description: "Two quick follow-up questions can help us fine-tune your portfolio.",

@@ -22,6 +22,12 @@ function getAnswerDisplay(stepId, answer) {
       return Object.values(answer).map(a => a.label).join(', ')
     case 'financial-picture':
       return `Age ${answer.currentAge}, ${formatDollar(answer.currentSavings)} saved, ${formatDollar(answer.monthlyContribution)}/mo`
+    case 'themes': {
+      const activeThemes = Object.entries(answer).filter(([, v]) => v).map(([k]) => k)
+      if (activeThemes.length === 0) return 'None selected'
+      const themeMap = { ai: 'AI', 'clean-energy': 'Clean Energy', innovation: 'Innovation', dividend: 'Dividends', none: 'None' }
+      return activeThemes.map(k => themeMap[k] || k).join(', ')
+    }
     case 'preferences': {
       const active = Object.entries(answer).filter(([, v]) => v).map(([k]) => k)
       if (active.length === 0) return 'None selected'
@@ -42,6 +48,7 @@ const DISPLAY_LABELS = {
   timeline: 'Timeline',
   risk: 'Risk Tolerance',
   'investment-style': 'Investment Style',
+  themes: 'Investment Themes',
   'deep-dive': 'Deep Dive',
   preferences: 'Preferences',
 }
@@ -54,6 +61,7 @@ export function ReviewStep({ answers, onEdit }) {
   if (answers['goal-conditional']) reviewOrder.push('goal-conditional')
   reviewOrder.push('timeline', 'risk')
   if (answers['investment-style']) reviewOrder.push('investment-style')
+  if (answers.themes) reviewOrder.push('themes')
   if (answers.deepDive) reviewOrder.push('deep-dive')
   reviewOrder.push('preferences')
 

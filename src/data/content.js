@@ -1,6 +1,6 @@
 export const HERO = {
-  headline: "From ETF Provider to Personalization Engine",
-  subheadline: "A roadmap for iShares to guide self-directed investors from product selection to personalized portfolio construction — starting simple, scaling with AI.",
+  headline: "Personalized Portfolios at iShares Scale",
+  subheadline: "Transform iShares from an ETF provider into a portfolio guidance and personalization engine for self-directed investors.",
   stats: [
     { value: 3.9, suffix: "T+", prefix: "$", label: "US AUM" },
     { value: 430, suffix: "+", label: "US-Listed ETFs" },

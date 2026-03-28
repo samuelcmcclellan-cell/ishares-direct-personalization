@@ -66,6 +66,16 @@ export function ResultsView({ portfolio, riskScore, onReset }) {
             <span className="text-sm font-semibold">{portfolio.targetReturn} annualized</span>
           </div>
         </div>
+
+        {portfolio.themeOverlays && portfolio.themeOverlays.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {portfolio.themeOverlays.map(theme => (
+              <span key={theme} className="inline-flex items-center gap-1 px-3 py-1 bg-[#FEDC00]/20 border border-[#FEDC00]/40 rounded-full text-xs font-medium text-black">
+                {theme}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">

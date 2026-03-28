@@ -21,4 +21,7 @@ export const ETF_DATA = {
   BINC: { ticker: "BINC", name: "BlackRock Flexible Income ETF",                 category: "Active Multi-Sector Bond",   expenseRatio: 0.40, active: true },
   DYNF: { ticker: "DYNF", name: "BlackRock U.S. Equity Factor Rotation ETF",     category: "Active US Factor Equity",    expenseRatio: 0.30, active: true },
   BALI: { ticker: "BALI", name: "BlackRock Large Cap Premium Income Active ETF",  category: "Active US Premium Income",  expenseRatio: 0.35, active: true },
+  BAI:  { ticker: "BAI",  name: "iShares A.I. Innovation and Tech Active ETF",   category: "AI & Technology Equity",    expenseRatio: 0.47, active: true },
+  BLCR: { ticker: "BLCR", name: "BlackRock Large Cap Core ETF",                  category: "Active US Large Cap",       expenseRatio: 0.09, active: true },
+  POWR: { ticker: "POWR", name: "BlackRock U.S. Carbon Transition Readiness ETF",category: "Clean Energy Equity",       expenseRatio: 0.30, active: true },
 }

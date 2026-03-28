@@ -30,15 +30,15 @@ export function PortfolioPieChart({ allocation }) {
     }))
 
   return (
-    <div className="w-full h-64">
+    <div className="w-full h-80">
       <ResponsiveContainer>
         <PieChart>
           <Pie
             data={data}
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={100}
+            innerRadius={70}
+            outerRadius={115}
             paddingAngle={2}
             dataKey="value"
             animationBegin={0}
