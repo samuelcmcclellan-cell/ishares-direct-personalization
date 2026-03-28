@@ -12,6 +12,27 @@ export const STEPS = [
       { id: "income",           label: "Income Generation",icon: "DollarSign", description: "Generating regular portfolio income" },
     ],
   },
+  // goal-followup injected dynamically after goal
+  {
+    id: "financial-picture",
+    title: "Your Financial Picture",
+    description: "Adjust the sliders — watch your projection update live.",
+    type: "financial-picture",
+  },
+  {
+    id: "account-type",
+    title: "What type of account will you use?",
+    description: "Account type affects tax treatment and investment options.",
+    type: "single-select",
+    options: [
+      { id: "taxable",       label: "Taxable brokerage",     description: "Standard investment account" },
+      { id: "traditional",   label: "Traditional IRA",       description: "Tax-deferred retirement account" },
+      { id: "roth",          label: "Roth IRA",              description: "Tax-free growth, funded with after-tax dollars" },
+      { id: "401k",          label: "401(k) / 403(b)",       description: "Employer-sponsored retirement plan" },
+      { id: "unsure",        label: "I'm not sure yet",      description: "We'll still give you a great portfolio" },
+    ],
+  },
+  // goal-conditional injected dynamically after account-type
   {
     id: "timeline",
     title: "When do you need this money?",
@@ -36,6 +57,17 @@ export const STEPS = [
       { id: "hold",      label: "Hold steady and wait it out",  riskScore: 3, description: "Markets recover over time" },
       { id: "buy-more",  label: "Buy more at lower prices",     riskScore: 4, description: "Volatility is opportunity" },
       { id: "buy-aggressive", label: "Significantly increase my position", riskScore: 5, description: "I have a very long horizon" },
+    ],
+  },
+  {
+    id: "investment-style",
+    title: "Which investing approach appeals to you?",
+    description: "This helps us select the right mix of fund types.",
+    type: "single-select",
+    options: [
+      { id: "index",  label: "Pure index investing",           description: "Low-cost, market-tracking ETFs" },
+      { id: "blend",  label: "Mix of index + active",          description: "Core index with active satellite positions" },
+      { id: "active", label: "Primarily active strategies",    description: "Actively managed for potential outperformance" },
     ],
   },
   {
@@ -150,6 +182,41 @@ export const GOAL_FOLLOWUPS = {
       { id: "max-growth",     label: "Maximum growth — I can handle the ups and downs", riskNudge: 0.5,  description: "Higher risk, higher potential" },
       { id: "steady-growth",  label: "Steady growth with less volatility",              riskNudge: -0.5, description: "Balanced approach" },
       { id: "preserve-grow",  label: "Preserve what I have and grow slowly",            riskNudge: -1,   description: "Capital preservation first" },
+    ],
+  },
+}
+
+export const GOAL_CONDITIONALS = {
+  "retirement-older": {
+    id: "goal-conditional",
+    title: "Do you have other retirement savings?",
+    description: "This helps us understand how this portfolio fits into your overall plan.",
+    type: "single-select",
+    options: [
+      { id: "significant", label: "Yes, significant savings",  description: "IRA, 401(k), pension, etc.", riskNudge: 0.5 },
+      { id: "some",        label: "Yes, some savings",         description: "Some but not substantial" },
+      { id: "none",        label: "No, this is my primary",    description: "This will be my main retirement fund", riskNudge: -0.5 },
+    ],
+  },
+  home: {
+    id: "goal-conditional",
+    title: "Are you a first-time homebuyer?",
+    description: "First-time buyers may qualify for special programs.",
+    type: "single-select",
+    options: [
+      { id: "yes", label: "Yes",  description: "First time purchasing a home" },
+      { id: "no",  label: "No",   description: "I've owned property before" },
+    ],
+  },
+  education: {
+    id: "goal-conditional",
+    title: "Are you considering a 529 plan?",
+    description: "529 plans offer tax advantages for education savings.",
+    type: "single-select",
+    options: [
+      { id: "yes",        label: "Yes",             description: "Already have or plan to open one" },
+      { id: "no",         label: "No",              description: "Not interested in a 529" },
+      { id: "whats-that", label: "What's that?",    description: "I'd like to learn more" },
     ],
   },
 }

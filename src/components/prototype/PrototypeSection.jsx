@@ -6,6 +6,7 @@ import { Button } from '../shared/Button'
 import { ProgressBar } from './ProgressBar'
 import { GoalStep } from './steps/GoalStep'
 import { GoalFollowUpStep } from './steps/GoalFollowUpStep'
+import { FinancialPictureStep } from './steps/FinancialPictureStep'
 import { TimelineStep } from './steps/TimelineStep'
 import { RiskStep } from './steps/RiskStep'
 import { RiskDeepDivePrompt, RiskDeepDive } from './steps/RiskDeepDive'
@@ -16,10 +17,13 @@ import { useQuestionnaire } from '../../hooks/useQuestionnaire'
 import { matchPortfolio } from '../../logic/matchingEngine'
 
 // Steps where clicking an option auto-advances (no Next button needed)
-const AUTO_ADVANCE_STEPS = new Set(['goal', 'goal-followup', 'timeline', 'risk'])
+const AUTO_ADVANCE_STEPS = new Set([
+  'goal', 'goal-followup', 'timeline', 'risk',
+  'account-type', 'investment-style', 'goal-conditional',
+])
 
 // Steps that need a Next / submit button
-const NEEDS_NEXT = new Set(['deep-dive', 'preferences'])
+const NEEDS_NEXT = new Set(['deep-dive', 'preferences', 'financial-picture'])
 
 function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit }) {
   if (!step) return null
@@ -29,10 +33,18 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
       return <GoalStep step={step} answer={answers.goal} onSelect={v => onSelect('goal', v)} />
     case 'goal-followup':
       return <GoalFollowUpStep step={step} answer={answers['goal-followup']} onSelect={v => onSelect('goal-followup', v)} />
+    case 'financial-picture':
+      return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} />
+    case 'account-type':
+      return <GoalFollowUpStep step={step} answer={answers['account-type']} onSelect={v => onSelect('account-type', v)} />
+    case 'goal-conditional':
+      return <GoalFollowUpStep step={step} answer={answers['goal-conditional']} onSelect={v => onSelect('goal-conditional', v)} />
     case 'timeline':
       return <TimelineStep step={step} answer={answers.timeline} onSelect={v => onSelect('timeline', v)} />
     case 'risk':
       return <RiskStep step={step} answer={answers.risk} onSelect={v => onSelect('risk', v)} />
+    case 'investment-style':
+      return <GoalFollowUpStep step={step} answer={answers['investment-style']} onSelect={v => onSelect('investment-style', v)} />
     case 'deep-dive-prompt':
       return <RiskDeepDivePrompt onChoice={handleDeepDiveChoice} />
     case 'deep-dive':
@@ -50,7 +62,6 @@ export function PrototypeSection() {
   const q = useQuestionnaire()
   const autoAdvanceTimer = useRef(null)
 
-
   const result = useMemo(() => {
     if (!q.showResults) return null
     return matchPortfolio({
@@ -60,6 +71,10 @@ export function PrototypeSection() {
       deepDive: q.answers.deepDive,
       preferences: q.answers.preferences,
       'goal-followup': q.answers['goal-followup'],
+      'financial-picture': q.answers['financial-picture'],
+      'account-type': q.answers['account-type'],
+      'investment-style': q.answers['investment-style'],
+      'goal-conditional': q.answers['goal-conditional'],
     })
   }, [q.showResults, q.answers])
 
@@ -73,9 +88,7 @@ export function PrototypeSection() {
 
     const currentId = q.currentStepData?.id
     if (AUTO_ADVANCE_STEPS.has(currentId)) {
-      // Clear any existing timer
       if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current)
-      // Auto-advance after brief delay to show selection
       autoAdvanceTimer.current = setTimeout(() => {
         q.goNext()
       }, 350)
@@ -88,6 +101,7 @@ export function PrototypeSection() {
     if (step.id === 'deep-dive-prompt') return false
     if (step.id === 'review') return false
     if (step.id === 'preferences') return true
+    if (step.id === 'financial-picture') return true // sliders always have valid defaults
     if (step.id === 'deep-dive') {
       const dd = q.answers.deepDive || {}
       return dd['savings-pct'] && dd['experience']
@@ -113,11 +127,11 @@ export function PrototypeSection() {
       <div className="text-center mb-12">
         <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#FEDC00] px-3 py-1 rounded-full mb-4">
           <Sparkles className="w-3 h-3" />
-          Interactive Demo — Model 1: Core Portfolios
+          Interactive Demo — Model 2: AI-Guided Portfolios
         </span>
         <h2 className="text-3xl font-bold tracking-tight mb-4">Try It Yourself</h2>
         <p className="text-[#4A4A4A] max-w-2xl mx-auto">
-          Experience how a self-directed investor would be matched to a personalized portfolio. This demonstrates the simplest operating model with ~5 core portfolios.
+          Experience how an AI-guided intake adapts questions based on your responses and matches you to a personalized portfolio from a curated library.
         </p>
       </div>
 
@@ -171,7 +185,7 @@ export function PrototypeSection() {
                   </Button>
                 ) : showNextButton ? (
                   <Button onClick={q.goNext} disabled={!canGoNext()}>
-                    Next
+                    Continue
                   </Button>
                 ) : null}
               </div>

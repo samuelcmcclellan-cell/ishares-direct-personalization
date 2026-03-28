@@ -51,3 +51,48 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
+
+/* Custom range slider */
+.slider-input {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #028E53 0%, #028E53 var(--fill, 50%), #E5E5DD var(--fill, 50%), #E5E5DD 100%);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.slider-input::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.slider-input::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: #E5E5DD;
+}
+
+.slider-input::-moz-range-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: #028E53;
+}

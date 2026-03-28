@@ -1,13 +1,9 @@
-import { STEPS, GOAL_FOLLOWUPS } from '../../../data/questions'
+import { STEPS, GOAL_FOLLOWUPS, GOAL_CONDITIONALS } from '../../../data/questions'
 
-function getStepLabel(stepId, answers) {
-  if (stepId === 'goal-followup') {
-    const goalId = answers.goal?.id
-    const followup = goalId ? GOAL_FOLLOWUPS[goalId] : null
-    return followup?.title || 'Follow-up'
-  }
-  const step = STEPS.find(s => s.id === stepId)
-  return step?.title || stepId.charAt(0).toUpperCase() + stepId.slice(1)
+function formatDollar(v) {
+  if (v >= 1000000) return `$${(v / 1000000).toFixed(1)}M`
+  if (v >= 1000) return `$${Math.round(v / 1000).toLocaleString()}K`
+  return `$${v}`
 }
 
 function getAnswerDisplay(stepId, answer) {
@@ -18,9 +14,14 @@ function getAnswerDisplay(stepId, answer) {
     case 'timeline':
     case 'risk':
     case 'goal-followup':
+    case 'account-type':
+    case 'investment-style':
+    case 'goal-conditional':
       return answer.label
     case 'deep-dive':
       return Object.values(answer).map(a => a.label).join(', ')
+    case 'financial-picture':
+      return `Age ${answer.currentAge}, ${formatDollar(answer.currentSavings)} saved, ${formatDollar(answer.monthlyContribution)}/mo`
     case 'preferences': {
       const active = Object.entries(answer).filter(([, v]) => v).map(([k]) => k)
       if (active.length === 0) return 'None selected'
@@ -35,17 +36,24 @@ function getAnswerDisplay(stepId, answer) {
 const DISPLAY_LABELS = {
   goal: 'Goal',
   'goal-followup': 'Details',
+  'financial-picture': 'Financial Picture',
+  'account-type': 'Account Type',
+  'goal-conditional': 'Goal Details',
   timeline: 'Timeline',
   risk: 'Risk Tolerance',
+  'investment-style': 'Investment Style',
   'deep-dive': 'Deep Dive',
   preferences: 'Preferences',
 }
 
 export function ReviewStep({ answers, onEdit }) {
-  // Build the review order dynamically
   const reviewOrder = ['goal']
   if (answers['goal-followup']) reviewOrder.push('goal-followup')
+  if (answers['financial-picture']) reviewOrder.push('financial-picture')
+  if (answers['account-type']) reviewOrder.push('account-type')
+  if (answers['goal-conditional']) reviewOrder.push('goal-conditional')
   reviewOrder.push('timeline', 'risk')
+  if (answers['investment-style']) reviewOrder.push('investment-style')
   if (answers.deepDive) reviewOrder.push('deep-dive')
   reviewOrder.push('preferences')
 
@@ -54,7 +62,6 @@ export function ReviewStep({ answers, onEdit }) {
     .map(id => ({
       id,
       label: DISPLAY_LABELS[id] || id,
-      questionLabel: getStepLabel(id, answers),
       display: getAnswerDisplay(id, answers[id]),
     }))
 

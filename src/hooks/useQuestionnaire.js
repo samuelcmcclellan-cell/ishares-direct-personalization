@@ -1,5 +1,26 @@
 import { useState, useCallback, useMemo } from 'react'
-import { STEPS, GOAL_FOLLOWUPS } from '../data/questions'
+import { STEPS, GOAL_FOLLOWUPS, GOAL_CONDITIONALS } from '../data/questions'
+
+function getGoalConditionalKey(answers) {
+  const goalId = answers.goal?.id
+  if (!goalId) return null
+
+  if (goalId === 'retirement') {
+    // Show retirement-older conditional if age >= 50 (from financial picture or goal-followup)
+    const fp = answers['financial-picture']
+    const followup = answers['goal-followup']
+    const age = fp?.currentAge || 0
+    const followupAge = followup?.id
+    if (age >= 50 || followupAge === '50-59' || followupAge === '60-plus') {
+      return 'retirement-older'
+    }
+    return null
+  }
+
+  if (goalId === 'home') return 'home'
+  if (goalId === 'education') return 'education'
+  return null
+}
 
 export function useQuestionnaire() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -10,19 +31,33 @@ export function useQuestionnaire() {
   const activeSteps = useMemo(() => {
     const goalId = answers.goal?.id
     const followup = goalId ? GOAL_FOLLOWUPS[goalId] : null
+    const conditionalKey = getGoalConditionalKey(answers)
+    const conditional = conditionalKey ? GOAL_CONDITIONALS[conditionalKey] : null
 
     const steps = []
     for (const step of STEPS) {
       if (step.id === 'deep-dive-prompt' && skipDeepDive) continue
       if (step.id === 'deep-dive' && skipDeepDive) continue
+
       steps.push(step)
+
       // Insert goal follow-up right after the goal step
       if (step.id === 'goal' && followup) {
         steps.push(followup)
       }
+
+      // Insert goal-conditional after account-type
+      if (step.id === 'account-type' && conditional) {
+        steps.push(conditional)
+      }
     }
     return steps
-  }, [skipDeepDive, answers.goal?.id])
+  }, [
+    skipDeepDive,
+    answers.goal?.id,
+    answers['goal-followup']?.id,
+    answers['financial-picture']?.currentAge,
+  ])
 
   const totalSteps = activeSteps.length
   const progress = Math.round(((currentStep + 1) / totalSteps) * 100)
@@ -31,9 +66,10 @@ export function useQuestionnaire() {
   const setAnswer = useCallback((stepId, value) => {
     setAnswers(prev => {
       const next = { ...prev, [stepId]: value }
-      // When goal changes, clear the follow-up answer since it's goal-specific
+      // When goal changes, clear dependent answers
       if (stepId === 'goal' && prev.goal?.id !== value?.id) {
         delete next['goal-followup']
+        delete next['goal-conditional']
       }
       return next
     })
