@@ -35,7 +35,7 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
     case 'goal-followup':
       return <GoalFollowUpStep step={step} answer={answers['goal-followup']} onSelect={v => onSelect('goal-followup', v)} />
     case 'financial-picture':
-      return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} />
+      return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goalFollowup={answers['goal-followup']} />
     case 'account-type':
       return <GoalFollowUpStep step={step} answer={answers['account-type']} onSelect={v => onSelect('account-type', v)} />
     case 'goal-conditional':

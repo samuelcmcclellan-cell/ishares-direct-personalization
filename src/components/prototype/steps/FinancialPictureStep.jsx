@@ -65,16 +65,37 @@ function CustomTooltip({ active, payload, label }) {
   )
 }
 
-export function FinancialPictureStep({ step, answer, onSelect }) {
+const AGE_FROM_FOLLOWUP = {
+  'under-30': 25,
+  '30-39': 35,
+  '40-49': 45,
+  '50-59': 55,
+  '60-plus': 65,
+}
+
+export function FinancialPictureStep({ step, answer, onSelect, goalFollowup }) {
+  const inferredAge = goalFollowup?.id ? (AGE_FROM_FOLLOWUP[goalFollowup.id] || 35) : 35
   const defaults = {
-    currentAge: 35,
-    retirementAge: 65,
+    currentAge: inferredAge,
+    retirementAge: Math.max(inferredAge + 5, 65),
     currentSavings: 50000,
     monthlyContribution: 500,
     annualIncome: 100000,
   }
 
   const [values, setValues] = useState(answer || defaults)
+
+  // Update age when goal-followup changes and user hasn't manually edited yet
+  useEffect(() => {
+    if (!answer && goalFollowup?.id) {
+      const age = AGE_FROM_FOLLOWUP[goalFollowup.id] || 35
+      setValues(prev => ({
+        ...prev,
+        currentAge: age,
+        retirementAge: Math.max(age + 5, 65),
+      }))
+    }
+  }, [goalFollowup?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save to parent on every change
   useEffect(() => {
