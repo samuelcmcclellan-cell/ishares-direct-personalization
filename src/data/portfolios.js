@@ -24,7 +24,7 @@ export const PORTFOLIOS = [
       { ticker: "IEFA", weight: 5 },
     ],
     suitableFor: {
-      goals: ["home", "income"],
+      goals: ["home", "income", "emergency"],
       minTimeline: "under-2",
     },
   },
@@ -54,7 +54,7 @@ export const PORTFOLIOS = [
       { ticker: "MUB",  weight: 10 },
     ],
     suitableFor: {
-      goals: ["home", "retirement", "income"],
+      goals: ["home", "retirement", "income", "emergency"],
       minTimeline: "under-2",
     },
   },
@@ -85,7 +85,7 @@ export const PORTFOLIOS = [
       { ticker: "LQD",  weight: 5 },
     ],
     suitableFor: {
-      goals: ["home", "retirement", "income", "education"],
+      goals: ["home", "retirement", "income", "education", "emergency"],
       minTimeline: "2-5",
     },
   },
@@ -117,7 +117,7 @@ export const PORTFOLIOS = [
       { ticker: "SHY",  weight: 5 },
     ],
     suitableFor: {
-      goals: ["retirement", "home", "income", "wealth-building", "education"],
+      goals: ["retirement", "home", "income", "wealth-building", "education", "emergency"],
       minTimeline: "2-5",
     },
   },
@@ -149,7 +149,7 @@ export const PORTFOLIOS = [
       { ticker: "LQD",  weight: 5 },
     ],
     suitableFor: {
-      goals: ["retirement", "wealth-building", "education", "home"],
+      goals: ["retirement", "wealth-building", "education", "home", "emergency"],
       minTimeline: "5-10",
     },
   },
@@ -438,7 +438,7 @@ export const PORTFOLIOS = [
       { ticker: "IEMG", weight: 5 },
     ],
     suitableFor: {
-      goals: ["retirement", "wealth-building", "education", "home"],
+      goals: ["retirement", "wealth-building", "education", "home", "emergency"],
       minTimeline: "5-10",
     },
     style: "index",
@@ -501,7 +501,7 @@ export const PORTFOLIOS = [
       { ticker: "MUB",  weight: 5 },
     ],
     suitableFor: {
-      goals: ["home", "education"],
+      goals: ["home", "education", "emergency"],
       minTimeline: "under-2",
     },
   },

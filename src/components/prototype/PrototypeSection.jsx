@@ -19,7 +19,7 @@ import { matchPortfolio } from '../../logic/matchingEngine'
 
 // Steps where clicking an option auto-advances (no Next button needed)
 const AUTO_ADVANCE_STEPS = new Set([
-  'goal', 'goal-followup', 'timeline', 'risk',
+  'goal', 'goal-followup', 'risk-preference', 'timeline', 'risk',
   'account-type', 'investment-style', 'goal-conditional',
 ])
 
@@ -34,6 +34,8 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
       return <GoalStep step={step} answer={answers.goal} onSelect={v => onSelect('goal', v)} />
     case 'goal-followup':
       return <GoalFollowUpStep step={step} answer={answers['goal-followup']} onSelect={v => onSelect('goal-followup', v)} />
+    case 'risk-preference':
+      return <GoalFollowUpStep step={step} answer={answers['risk-preference']} onSelect={v => onSelect('risk-preference', v)} />
     case 'financial-picture':
       return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goal={answers.goal} goalFollowup={answers['goal-followup']} />
     case 'account-type':
@@ -75,6 +77,7 @@ export function PrototypeSection() {
       deepDive: q.answers.deepDive,
       preferences: q.answers.preferences,
       'goal-followup': q.answers['goal-followup'],
+      'risk-preference': q.answers['risk-preference'],
       'financial-picture': q.answers['financial-picture'],
       'account-type': q.answers['account-type'],
       'investment-style': q.answers['investment-style'],

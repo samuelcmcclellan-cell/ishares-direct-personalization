@@ -14,6 +14,7 @@ function getAnswerDisplay(stepId, answer) {
     case 'timeline':
     case 'risk':
     case 'goal-followup':
+    case 'risk-preference':
     case 'account-type':
     case 'investment-style':
     case 'goal-conditional':
@@ -21,7 +22,7 @@ function getAnswerDisplay(stepId, answer) {
     case 'deep-dive':
       return Object.values(answer).map(a => a.label).join(', ')
     case 'financial-picture':
-      return `Age ${answer.currentAge}, ${formatDollar(answer.currentSavings)} saved, ${formatDollar(answer.monthlyContribution)}/mo`
+      return `Age ${answer.currentAge}, ${formatDollar(answer.currentSavings)} saved, ${answer.savingsRate || 0}% savings rate`
     case 'themes': {
       const activeThemes = Object.entries(answer).filter(([, v]) => v).map(([k]) => k)
       if (activeThemes.length === 0) return 'None selected'
@@ -42,6 +43,7 @@ function getAnswerDisplay(stepId, answer) {
 const DISPLAY_LABELS = {
   goal: 'Goal',
   'goal-followup': 'Details',
+  'risk-preference': 'Growth Preference',
   'financial-picture': 'Financial Picture',
   'account-type': 'Account Type',
   'goal-conditional': 'Goal Details',
@@ -56,6 +58,7 @@ const DISPLAY_LABELS = {
 export function ReviewStep({ answers, onEdit }) {
   const reviewOrder = ['goal']
   if (answers['goal-followup']) reviewOrder.push('goal-followup')
+  if (answers['risk-preference']) reviewOrder.push('risk-preference')
   if (answers['financial-picture']) reviewOrder.push('financial-picture')
   if (answers['account-type']) reviewOrder.push('account-type')
   if (answers['goal-conditional']) reviewOrder.push('goal-conditional')

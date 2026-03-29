@@ -1,7 +1,7 @@
-import { Sunset, GraduationCap, Home, TrendingUp, DollarSign } from 'lucide-react'
+import { Sunset, GraduationCap, Home, TrendingUp, DollarSign, Shield } from 'lucide-react'
 import { Card } from '../../shared/Card'
 
-const ICONS = { Sunset, GraduationCap, Home, TrendingUp, DollarSign }
+const ICONS = { Sunset, GraduationCap, Home, TrendingUp, DollarSign, Shield }
 
 export function GoalStep({ step, answer, onSelect }) {
   return (

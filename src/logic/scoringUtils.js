@@ -24,10 +24,16 @@ export function computeRiskScore(answers) {
     }
   }
 
-  // Goal follow-up risk nudge (e.g., wealth-building priorities)
+  // Goal follow-up risk nudge
   const followup = answers['goal-followup']
   if (followup?.riskNudge) {
     modifier += followup.riskNudge
+  }
+
+  // Universal growth vs. stability preference (1-5 scale)
+  const riskPref = answers['risk-preference']
+  if (riskPref?.riskNudge) {
+    modifier += riskPref.riskNudge
   }
 
   // Goal-conditional risk nudge (e.g., retirement savings situation)

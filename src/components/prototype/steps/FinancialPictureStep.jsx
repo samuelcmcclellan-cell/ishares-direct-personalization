@@ -2,11 +2,11 @@ import { useState, useMemo, useEffect } from 'react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
 const SLIDERS = [
-  { key: 'currentAge',          label: 'Current Age',          min: 18, max: 75,     step: 1,    format: v => `${v} years`,     defaultValue: 35 },
-  { key: 'retirementAge',       label: 'Retirement Age',       min: 50, max: 80,     step: 1,    format: v => `${v} years`,     defaultValue: 65 },
-  { key: 'currentSavings',      label: 'Current Savings',      min: 0,  max: 2000000, step: 5000, format: v => formatDollar(v),  defaultValue: 50000 },
-  { key: 'monthlyContribution', label: 'Monthly Contribution', min: 0,  max: 10000,  step: 100,  format: v => formatDollar(v),  defaultValue: 500 },
-  { key: 'annualIncome',        label: 'Annual Income',        min: 0,  max: 500000, step: 5000, format: v => formatDollar(v),  defaultValue: 100000 },
+  { key: 'currentAge',     label: 'Current Age',     min: 18, max: 75,      step: 1,    format: v => `${v} years`,     defaultValue: 35 },
+  { key: 'retirementAge',  label: 'Retirement Age',  min: 50, max: 80,      step: 1,    format: v => `${v} years`,     defaultValue: 65 },
+  { key: 'currentSavings', label: 'Current Savings',  min: 0,  max: 2000000, step: 5000, format: v => formatDollar(v),  defaultValue: 50000 },
+  { key: 'savingsRate',    label: 'Savings Rate',     min: 0,  max: 30,      step: 1,    format: v => `${v}%`,          defaultValue: 10 },
+  { key: 'annualIncome',   label: 'Annual Income',    min: 0,  max: 500000,  step: 5000, format: v => formatDollar(v),  defaultValue: 100000 },
 ]
 
 function formatDollar(v) {
@@ -29,23 +29,28 @@ function getTaxBracket(income) {
   return '37%'
 }
 
-function computeProjection(currentAge, retirementAge, currentSavings, monthlyContribution) {
+function computeProjection(currentAge, retirementAge, currentSavings, annualIncome, savingsRate) {
   const years = Math.max(0, retirementAge - currentAge)
-  const rate = 0.07
+  const returnRate = 0.07
+  const incomeGrowthRate = 0.03
   const data = []
+  let balance = currentSavings
+  let totalContributions = currentSavings
 
   for (let t = 0; t <= years; t++) {
-    const totalContributions = currentSavings + monthlyContribution * 12 * t
-    // Future value: FV of lump sum + FV of annuity
-    const growth = currentSavings * Math.pow(1 + rate, t) +
-      monthlyContribution * 12 * ((Math.pow(1 + rate, t) - 1) / rate)
-
     data.push({
       year: t,
       age: currentAge + t,
       contributions: Math.round(totalContributions),
-      growth: Math.round(growth),
+      growth: Math.round(balance),
     })
+
+    if (t < years) {
+      const yearIncome = annualIncome * Math.pow(1 + incomeGrowthRate, t)
+      const yearContribution = yearIncome * savingsRate / 100
+      totalContributions += yearContribution
+      balance = (balance + yearContribution) * (1 + returnRate)
+    }
   }
   return data
 }
@@ -75,26 +80,29 @@ const AGE_FROM_FOLLOWUP = {
 
 const SMART_DEFAULTS = {
   retirement: {
-    'under-30': { currentSavings: 15000,  monthlyContribution: 400,  annualIncome: 65000 },
-    '30-39':    { currentSavings: 80000,  monthlyContribution: 700,  annualIncome: 110000 },
-    '40-49':    { currentSavings: 200000, monthlyContribution: 1000, annualIncome: 140000 },
-    '50-59':    { currentSavings: 400000, monthlyContribution: 1500, annualIncome: 150000 },
-    '60-plus':  { currentSavings: 600000, monthlyContribution: 1000, annualIncome: 100000 },
+    'under-30': { currentSavings: 15000,  savingsRate: 7,  annualIncome: 65000 },
+    '30-39':    { currentSavings: 80000,  savingsRate: 8,  annualIncome: 110000 },
+    '40-49':    { currentSavings: 200000, savingsRate: 9,  annualIncome: 140000 },
+    '50-59':    { currentSavings: 400000, savingsRate: 12, annualIncome: 150000 },
+    '60-plus':  { currentSavings: 600000, savingsRate: 12, annualIncome: 100000 },
   },
   education: {
-    _default: { currentSavings: 25000, monthlyContribution: 500, annualIncome: 100000 },
+    _default: { currentSavings: 25000, savingsRate: 6, annualIncome: 100000 },
   },
   home: {
-    'under-50k': { currentSavings: 15000,  monthlyContribution: 800,  annualIncome: 75000 },
-    '50k-100k':  { currentSavings: 30000,  monthlyContribution: 1200, annualIncome: 100000 },
-    '100k-200k': { currentSavings: 60000,  monthlyContribution: 1500, annualIncome: 140000 },
-    'over-200k': { currentSavings: 120000, monthlyContribution: 2000, annualIncome: 200000 },
+    'under-50k': { currentSavings: 15000,  savingsRate: 13, annualIncome: 75000 },
+    '50k-100k':  { currentSavings: 30000,  savingsRate: 14, annualIncome: 100000 },
+    '100k-200k': { currentSavings: 60000,  savingsRate: 13, annualIncome: 140000 },
+    'over-200k': { currentSavings: 120000, savingsRate: 12, annualIncome: 200000 },
   },
   'wealth-building': {
-    _default: { currentSavings: 50000, monthlyContribution: 800, annualIncome: 110000 },
+    _default: { currentSavings: 50000, savingsRate: 9, annualIncome: 110000 },
   },
   income: {
-    _default: { currentSavings: 150000, monthlyContribution: 500, annualIncome: 90000 },
+    _default: { currentSavings: 150000, savingsRate: 7, annualIncome: 90000 },
+  },
+  emergency: {
+    _default: { currentSavings: 5000, savingsRate: 15, annualIncome: 75000 },
   },
 }
 
@@ -107,7 +115,7 @@ function getSmartDefaults(goal, goalFollowup) {
     currentAge: inferredAge,
     retirementAge: Math.max(inferredAge + 5, 65),
     currentSavings: 50000,
-    monthlyContribution: 500,
+    savingsRate: 10,
     annualIncome: 100000,
   }
 
@@ -136,7 +144,7 @@ export function FinancialPictureStep({ step, answer, onSelect, goal, goalFollowu
   // Save to parent on every change
   useEffect(() => {
     onSelect(values)
-  }, [values]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [values]) // eslint-disable-line react-hooks-exhaustive-deps
 
   const handleChange = (key, val) => {
     setValues(prev => {
@@ -150,13 +158,14 @@ export function FinancialPictureStep({ step, answer, onSelect, goal, goalFollowu
   }
 
   const projection = useMemo(
-    () => computeProjection(values.currentAge, values.retirementAge, values.currentSavings, values.monthlyContribution),
-    [values.currentAge, values.retirementAge, values.currentSavings, values.monthlyContribution]
+    () => computeProjection(values.currentAge, values.retirementAge, values.currentSavings, values.annualIncome, values.savingsRate),
+    [values.currentAge, values.retirementAge, values.currentSavings, values.annualIncome, values.savingsRate]
   )
 
   const projectedValue = projection.length > 0 ? projection[projection.length - 1].growth : 0
   const yearsToRetirement = values.retirementAge - values.currentAge
   const taxBracket = getTaxBracket(values.annualIncome)
+  const derivedMonthly = Math.round(values.annualIncome * values.savingsRate / 100 / 12)
 
   const fillPercent = (key) => {
     const s = SLIDERS.find(sl => sl.key === key)
@@ -193,6 +202,12 @@ export function FinancialPictureStep({ step, answer, onSelect, goal, goalFollowu
                 <span>{slider.format(slider.min)}</span>
                 <span>{slider.format(slider.max)}</span>
               </div>
+              {/* Show derived monthly amount below savings rate */}
+              {slider.key === 'savingsRate' && (
+                <div className="text-xs text-[#028E53] font-medium mt-1">
+                  {formatDollar(derivedMonthly)}/mo &middot; {formatDollar(derivedMonthly * 12)}/yr
+                </div>
+              )}
             </div>
           ))}
 
@@ -205,7 +220,7 @@ export function FinancialPictureStep({ step, answer, onSelect, goal, goalFollowu
         <div>
           <div className="text-center mb-3">
             <div className="text-xs text-[#7A7A7A]">
-              Projected Value ({yearsToRetirement}yr, 7% return)
+              Projected Value ({yearsToRetirement}yr, 7% return, 3% raises)
             </div>
             <div className="text-3xl font-bold text-[#028E53]">
               {formatDollarFull(projectedValue)}

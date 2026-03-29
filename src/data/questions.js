@@ -1,18 +1,32 @@
 export const STEPS = [
   {
     id: "goal",
-    title: "What are you investing for?",
-    description: "Select the primary goal for this investment.",
+    title: "What is your primary motivation for investing?",
+    description: "Choose the single goal that matters most right now.",
     type: "single-select",
     options: [
-      { id: "retirement",       label: "Retirement",       icon: "Sunset",    description: "Building long-term wealth for retirement" },
-      { id: "education",        label: "Education",        icon: "GraduationCap", description: "Saving for college or advanced education" },
-      { id: "home",             label: "Home Purchase",    icon: "Home",      description: "Saving for a down payment or property" },
-      { id: "wealth-building",  label: "Wealth Building",  icon: "TrendingUp", description: "General long-term growth" },
-      { id: "income",           label: "Income Generation",icon: "DollarSign", description: "Generating regular portfolio income" },
+      { id: "retirement",       label: "Retirement",        icon: "Sunset",       description: "Building long-term wealth for retirement" },
+      { id: "education",        label: "Education",         icon: "GraduationCap", description: "Saving for college or advanced education" },
+      { id: "home",             label: "Major Purchase",    icon: "Home",          description: "Saving for a home, car, wedding, or other large expense" },
+      { id: "wealth-building",  label: "Wealth Building",   icon: "TrendingUp",    description: "General long-term growth" },
+      { id: "income",           label: "Income Generation", icon: "DollarSign",    description: "Generating regular portfolio income" },
+      { id: "emergency",        label: "Emergency Fund",    icon: "Shield",        description: "Building a financial safety net" },
     ],
   },
   // goal-followup injected dynamically after goal
+  {
+    id: "risk-preference",
+    title: "Calibrate growth vs. stability",
+    description: "Where do you fall on the spectrum?",
+    type: "single-select",
+    options: [
+      { id: "1", label: "1 — Preserve",    riskNudge: -2, description: "Protect what I have" },
+      { id: "2", label: "2 — Conservative", riskNudge: -1, description: "Stability first" },
+      { id: "3", label: "3 — Balanced",     riskNudge: 0,  description: "Equal priority" },
+      { id: "4", label: "4 — Growth",       riskNudge: 1,  description: "Lean into growth" },
+      { id: "5", label: "5 — Max Growth",   riskNudge: 2,  description: "Maximize returns" },
+    ],
+  },
   {
     id: "financial-picture",
     title: "Your Financial Picture",
@@ -206,13 +220,13 @@ export const GOAL_FOLLOWUPS = {
   home: {
     id: "goal-followup",
     title: "Roughly how much do you need to save?",
-    description: "Down payment size affects how we balance growth vs. stability.",
+    description: "Target amount affects how we balance growth vs. stability.",
     type: "single-select",
     options: [
-      { id: "under-50k",   label: "Under $50K",     description: "Starter home or partial down payment" },
+      { id: "under-50k",   label: "Under $50K",     description: "Smaller target" },
       { id: "50k-100k",    label: "$50K – $100K",    description: "Mid-range target" },
-      { id: "100k-200k",   label: "$100K – $200K",   description: "Significant down payment" },
-      { id: "over-200k",   label: "$200K+",          description: "High-value property" },
+      { id: "100k-200k",   label: "$100K – $200K",   description: "Significant goal" },
+      { id: "over-200k",   label: "$200K+",          description: "Large purchase" },
     ],
   },
   income: {
@@ -227,15 +241,15 @@ export const GOAL_FOLLOWUPS = {
       { id: "5-plus-years",  label: "5+ years out",      impliedTimeline: "5-10",    description: "Growing toward income" },
     ],
   },
-  "wealth-building": {
+  emergency: {
     id: "goal-followup",
-    title: "What's most important to you?",
-    description: "This helps us calibrate growth vs. stability in your portfolio.",
+    title: "How many months of expenses are you targeting?",
+    description: "A larger emergency fund allows for a slightly longer time horizon.",
     type: "single-select",
     options: [
-      { id: "max-growth",     label: "Maximum growth — I can handle the ups and downs", riskNudge: 1,  description: "Higher risk, higher potential" },
-      { id: "steady-growth",  label: "Steady growth with less volatility",              riskNudge: -1, description: "Balanced approach" },
-      { id: "preserve-grow",  label: "Preserve what I have and grow slowly",            riskNudge: -2,   description: "Capital preservation first" },
+      { id: "3-months",  label: "3 months",  impliedTimeline: "under-2", description: "Basic safety net" },
+      { id: "6-months",  label: "6 months",  impliedTimeline: "2-5",     description: "Recommended baseline" },
+      { id: "12-months", label: "12 months", impliedTimeline: "2-5",     description: "Extended cushion" },
     ],
   },
 }
@@ -254,12 +268,12 @@ export const GOAL_CONDITIONALS = {
   },
   home: {
     id: "goal-conditional",
-    title: "Are you a first-time homebuyer?",
-    description: "First-time buyers may qualify for special programs.",
+    title: "Is this your first time saving for a major financial goal?",
+    description: "This helps us understand your experience level.",
     type: "single-select",
     options: [
-      { id: "yes", label: "Yes",  description: "First time purchasing a home" },
-      { id: "no",  label: "No",   description: "I've owned property before" },
+      { id: "yes", label: "Yes",  description: "First time setting a major savings target" },
+      { id: "no",  label: "No",   description: "I've saved for large goals before" },
     ],
   },
   education: {

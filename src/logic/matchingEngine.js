@@ -60,8 +60,8 @@ function buildExplanations(answers, riskScore) {
   if (goal) {
     const goalLabels = {
       retirement: 'retirement', education: 'education savings',
-      home: 'home purchase', 'wealth-building': 'wealth building',
-      income: 'income generation',
+      home: 'major purchase', 'wealth-building': 'wealth building',
+      income: 'income generation', emergency: 'emergency fund',
     }
     explanations.push({ icon: 'Target', text: `Tailored for your ${goalLabels[goal.id] || goal.label} goal` })
   }
@@ -77,6 +77,17 @@ function buildExplanations(answers, riskScore) {
     explanations.push({ icon: 'Shield', text: 'Your near-term timeline favors stability with moderate growth' })
   }
 
+  // Growth preference (1-5 scale)
+  const riskPref = answers['risk-preference']
+  if (riskPref) {
+    const prefScore = parseInt(riskPref.id)
+    if (prefScore <= 2) {
+      explanations.push({ icon: 'Shield', text: 'Your preference for stability guided a more conservative allocation' })
+    } else if (prefScore >= 4) {
+      explanations.push({ icon: 'TrendingUp', text: 'Your growth preference supports a higher equity allocation' })
+    }
+  }
+
   // Risk tolerance
   if (risk) {
     if (risk.riskScore >= 8) {
@@ -87,7 +98,7 @@ function buildExplanations(answers, riskScore) {
   }
 
   // Near-term trigger
-  if ((goal?.id === 'home' || goal?.id === 'education') && timeline === 'under-2') {
+  if ((goal?.id === 'home' || goal?.id === 'education' || goal?.id === 'emergency') && timeline === 'under-2') {
     explanations.push({ icon: 'AlertCircle', text: 'Short-term goal timeline triggered a capital preservation portfolio' })
   }
 
@@ -141,7 +152,7 @@ export function matchPortfolio(answers) {
   })
 
   // 1. Near-term capital preservation auto-trigger
-  if ((goal === 'home' || goal === 'education') && timeline === 'under-2') {
+  if ((goal === 'home' || goal === 'education' || goal === 'emergency') && timeline === 'under-2') {
     const nearTermMatch = PORTFOLIOS.find(p => p.id === 'near-term-reserve')
     if (nearTermMatch) return result(nearTermMatch)
   }
