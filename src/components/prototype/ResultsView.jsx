@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowLeft, RotateCcw } from 'lucide-react'
+import { ArrowLeft, RotateCcw, Target, Clock, Shield, TrendingUp, Receipt, Globe, DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle } from 'lucide-react'
 import { PortfolioPieChart } from './PortfolioPieChart'
 import { HoldingsTable } from './HoldingsTable'
 import { Button } from '../shared/Button'
@@ -35,7 +35,12 @@ function RiskGauge({ score }) {
   )
 }
 
-export function ResultsView({ portfolio, riskScore, onReset }) {
+const ICON_MAP = {
+  Target, Clock, Shield, TrendingUp, Receipt, Globe,
+  DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle,
+}
+
+export function ResultsView({ portfolio, riskScore, explanations, onReset }) {
   if (!portfolio) return null
 
   return (
@@ -82,6 +87,25 @@ export function ResultsView({ portfolio, riskScore, onReset }) {
           </div>
         )}
       </div>
+
+      {explanations && explanations.length > 0 && (
+        <div className="bg-[#F5F5EB] border border-[#E5E5DD] rounded-2xl p-6 mb-8">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-[#7A7A7A] mb-4">Why This Portfolio</h3>
+          <div className="space-y-3">
+            {explanations.map((item, i) => {
+              const IconComponent = ICON_MAP[item.icon] || Target
+              return (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-7 h-7 rounded-lg bg-white border border-[#E5E5DD] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <IconComponent className="w-3.5 h-3.5 text-[#4A4A4A]" />
+                  </div>
+                  <p className="text-sm text-[#4A4A4A] leading-relaxed">{item.text}</p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div className="bg-[#F5F5EB] border border-[#E5E5DD] rounded-2xl p-6">

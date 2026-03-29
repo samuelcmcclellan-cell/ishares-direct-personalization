@@ -35,7 +35,7 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
     case 'goal-followup':
       return <GoalFollowUpStep step={step} answer={answers['goal-followup']} onSelect={v => onSelect('goal-followup', v)} />
     case 'financial-picture':
-      return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goalFollowup={answers['goal-followup']} />
+      return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goal={answers.goal} goalFollowup={answers['goal-followup']} />
     case 'account-type':
       return <GoalFollowUpStep step={step} answer={answers['account-type']} onSelect={v => onSelect('account-type', v)} />
     case 'goal-conditional':
@@ -64,6 +64,7 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
 export function PrototypeSection() {
   const q = useQuestionnaire()
   const autoAdvanceTimer = useRef(null)
+  const cardRef = useRef(null)
 
   const result = useMemo(() => {
     if (!q.showResults) return null
@@ -86,6 +87,18 @@ export function PrototypeSection() {
   useEffect(() => () => {
     if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current)
   }, [])
+
+  // Scroll questionnaire card into view on step change or results (skip initial mount)
+  const hasMounted = useRef(false)
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true
+      return
+    }
+    if (cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [q.currentStep, q.showResults])
 
   const handleSelect = useCallback((stepId, value) => {
     q.setAnswer(stepId, value)
@@ -141,11 +154,12 @@ export function PrototypeSection() {
         </p>
       </div>
 
-      <div className="max-w-3xl mx-auto bg-white border border-[#E5E5DD] rounded-2xl p-8 md:p-10 shadow-[0_0_24px_rgba(0,0,0,0.06)]">
+      <div ref={cardRef} className="max-w-3xl mx-auto bg-white border border-[#E5E5DD] rounded-2xl p-8 md:p-10 shadow-[0_0_24px_rgba(0,0,0,0.06)] scroll-mt-24">
         {q.showResults && result ? (
           <ResultsView
             portfolio={result.portfolio}
             riskScore={result.riskScore}
+            explanations={result.explanations}
             onReset={q.reset}
           />
         ) : (
@@ -154,6 +168,8 @@ export function PrototypeSection() {
               progress={q.progress}
               currentStep={q.currentStep}
               totalSteps={q.totalSteps}
+              activeSteps={q.activeSteps}
+              onPhaseClick={q.goToStep}
             />
 
             <motion.div

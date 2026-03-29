@@ -73,9 +73,37 @@ const AGE_FROM_FOLLOWUP = {
   '60-plus': 65,
 }
 
-export function FinancialPictureStep({ step, answer, onSelect, goalFollowup }) {
-  const inferredAge = goalFollowup?.id ? (AGE_FROM_FOLLOWUP[goalFollowup.id] || 35) : 35
-  const defaults = {
+const SMART_DEFAULTS = {
+  retirement: {
+    'under-30': { currentSavings: 15000,  monthlyContribution: 400,  annualIncome: 65000 },
+    '30-39':    { currentSavings: 80000,  monthlyContribution: 700,  annualIncome: 110000 },
+    '40-49':    { currentSavings: 200000, monthlyContribution: 1000, annualIncome: 140000 },
+    '50-59':    { currentSavings: 400000, monthlyContribution: 1500, annualIncome: 150000 },
+    '60-plus':  { currentSavings: 600000, monthlyContribution: 1000, annualIncome: 100000 },
+  },
+  education: {
+    _default: { currentSavings: 25000, monthlyContribution: 500, annualIncome: 100000 },
+  },
+  home: {
+    'under-50k': { currentSavings: 15000,  monthlyContribution: 800,  annualIncome: 75000 },
+    '50k-100k':  { currentSavings: 30000,  monthlyContribution: 1200, annualIncome: 100000 },
+    '100k-200k': { currentSavings: 60000,  monthlyContribution: 1500, annualIncome: 140000 },
+    'over-200k': { currentSavings: 120000, monthlyContribution: 2000, annualIncome: 200000 },
+  },
+  'wealth-building': {
+    _default: { currentSavings: 50000, monthlyContribution: 800, annualIncome: 110000 },
+  },
+  income: {
+    _default: { currentSavings: 150000, monthlyContribution: 500, annualIncome: 90000 },
+  },
+}
+
+function getSmartDefaults(goal, goalFollowup) {
+  const goalId = goal?.id
+  const followupId = goalFollowup?.id
+  const inferredAge = followupId ? (AGE_FROM_FOLLOWUP[followupId] || 35) : 35
+
+  const base = {
     currentAge: inferredAge,
     retirementAge: Math.max(inferredAge + 5, 65),
     currentSavings: 50000,
@@ -83,19 +111,27 @@ export function FinancialPictureStep({ step, answer, onSelect, goalFollowup }) {
     annualIncome: 100000,
   }
 
+  if (!goalId || !SMART_DEFAULTS[goalId]) return base
+
+  const goalDefaults = SMART_DEFAULTS[goalId]
+  const match = goalDefaults[followupId] || goalDefaults._default
+  if (match) {
+    return { ...base, ...match }
+  }
+  return base
+}
+
+export function FinancialPictureStep({ step, answer, onSelect, goal, goalFollowup }) {
+  const defaults = getSmartDefaults(goal, goalFollowup)
+
   const [values, setValues] = useState(answer || defaults)
 
-  // Update age when goal-followup changes and user hasn't manually edited yet
+  // Update defaults when goal or goal-followup changes and user hasn't manually edited yet
   useEffect(() => {
-    if (!answer && goalFollowup?.id) {
-      const age = AGE_FROM_FOLLOWUP[goalFollowup.id] || 35
-      setValues(prev => ({
-        ...prev,
-        currentAge: age,
-        retirementAge: Math.max(age + 5, 65),
-      }))
+    if (!answer) {
+      setValues(getSmartDefaults(goal, goalFollowup))
     }
-  }, [goalFollowup?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [goal?.id, goalFollowup?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save to parent on every change
   useEffect(() => {

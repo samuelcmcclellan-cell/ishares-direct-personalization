@@ -87,6 +87,12 @@ export function useQuestionnaire() {
     }
   }, [currentStep])
 
+  const goToStep = useCallback((idx) => {
+    if (idx >= 0 && idx < currentStep) {
+      setCurrentStep(idx)
+    }
+  }, [currentStep])
+
   const handleDeepDiveChoice = useCallback((wantDeepDive) => {
     if (!wantDeepDive) {
       setSkipDeepDive(true)
@@ -118,6 +124,7 @@ export function useQuestionnaire() {
     setAnswer,
     goNext,
     goBack,
+    goToStep,
     handleDeepDiveChoice,
     submit,
     reset,
