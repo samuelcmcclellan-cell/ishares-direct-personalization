@@ -70,6 +70,8 @@ export function useQuestionnaire() {
       if (stepId === 'goal' && prev.goal?.id !== value?.id) {
         delete next['goal-followup']
         delete next['goal-conditional']
+        delete next['ai-insight-1']
+        delete next['ai-insight-2']
       }
       return next
     })

@@ -42,6 +42,16 @@ export function computeRiskScore(answers) {
     modifier += conditional.riskNudge
   }
 
+  // AI insight modifiers
+  const aiInsight1 = answers['ai-insight-1']
+  if (aiInsight1?.analysis?.riskModifier) {
+    modifier += aiInsight1.analysis.riskModifier
+  }
+  const aiInsight2 = answers['ai-insight-2']
+  if (aiInsight2?.analysis?.riskModifier) {
+    modifier += aiInsight2.analysis.riskModifier
+  }
+
   // Timeline uplift — long horizons counterbalance inexperience penalties
   const timeline = resolveTimeline(answers)
   if (timeline && TIMELINE_UPLIFT[timeline]) {

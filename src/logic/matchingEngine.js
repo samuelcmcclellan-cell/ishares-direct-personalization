@@ -134,6 +134,16 @@ function buildExplanations(answers, riskScore) {
     explanations.push({ icon: 'SlidersHorizontal', text: `Fine-tuned with ${answered} additional data points from your detailed profile` })
   }
 
+  // AI behavioral insights
+  const ai1 = answers['ai-insight-1']
+  if (ai1?.analysis?.behavioralNotes && ai1.analysis.behavioralNotes !== 'Standard risk profile based on questionnaire data.') {
+    explanations.push({ icon: 'Brain', text: ai1.analysis.behavioralNotes })
+  }
+  const ai2 = answers['ai-insight-2']
+  if (ai2?.analysis?.behavioralNotes && ai2.analysis.behavioralNotes !== 'Standard risk profile based on questionnaire data.') {
+    explanations.push({ icon: 'Brain', text: ai2.analysis.behavioralNotes })
+  }
+
   return explanations
 }
 
@@ -199,11 +209,25 @@ export function matchPortfolio(answers) {
     if (timeFiltered.length > 0) candidates = timeFiltered
   }
 
-  // Select closest risk score match, ties break toward growth
+  // Select closest risk score match, ties break by AI emphasis then toward growth
+  const aiEmphasis = answers['ai-insight-2']?.analysis?.suggestedEmphasis
   candidates.sort((a, b) => {
     const diffA = Math.abs(a.riskScore - riskScore)
     const diffB = Math.abs(b.riskScore - riskScore)
     if (diffA !== diffB) return diffA - diffB
+
+    // Use AI emphasis as tiebreaker
+    if (aiEmphasis && aiEmphasis !== 'balanced') {
+      const emphasisScore = (p) => {
+        if (aiEmphasis === 'growth' && p.riskScore >= 7) return 1
+        if (aiEmphasis === 'stability' && p.riskScore <= 4) return 1
+        if (aiEmphasis === 'income' && p.preference === 'income') return 1
+        return 0
+      }
+      const esDiff = emphasisScore(b) - emphasisScore(a)
+      if (esDiff !== 0) return esDiff
+    }
+
     return b.riskScore - a.riskScore // break tie toward growth
   })
 

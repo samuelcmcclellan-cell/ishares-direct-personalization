@@ -34,6 +34,13 @@ export const STEPS = [
     type: "financial-picture",
   },
   {
+    id: "ai-insight-1",
+    title: "Let\u2019s go a bit deeper",
+    description: "Your numbers tell part of the story. Help us understand the person behind them.",
+    type: "ai-insight",
+    insightStep: "first",
+  },
+  {
     id: "account-type",
     title: "What type of account will you use?",
     description: "Account type affects tax treatment and investment options.",
@@ -96,6 +103,13 @@ export const STEPS = [
       { id: "dividend",      label: "Dividend Growers",         icon: "TrendingUp",  description: "Companies with rising dividend track records" },
       { id: "none",          label: "No thematic preference",   icon: "MinusCircle", description: "Stick with broad market exposure" },
     ],
+  },
+  {
+    id: "ai-insight-2",
+    title: "One last question",
+    description: "Before we build your portfolio, we want to make sure we understand what matters most to you.",
+    type: "ai-insight",
+    insightStep: "second",
   },
   {
     id: "deep-dive-prompt",

@@ -6,6 +6,11 @@ function formatDollar(v) {
   return `$${v}`
 }
 
+function truncate(str, max = 80) {
+  if (!str || str.length <= max) return str
+  return str.slice(0, max).trimEnd() + '…'
+}
+
 function getAnswerDisplay(stepId, answer) {
   if (!answer) return 'Not answered'
 
@@ -35,6 +40,9 @@ function getAnswerDisplay(stepId, answer) {
       const labelMap = { income: 'Income', intl: 'International', taxAware: 'Tax-Aware' }
       return active.map(k => labelMap[k] || k).join(', ')
     }
+    case 'ai-insight-1':
+    case 'ai-insight-2':
+      return answer.response ? truncate(answer.response) : 'Not answered'
     default:
       return ''
   }
@@ -45,12 +53,14 @@ const DISPLAY_LABELS = {
   'goal-followup': 'Details',
   'risk-preference': 'Growth Preference',
   'financial-picture': 'Financial Picture',
+  'ai-insight-1': 'Behavioral Insight',
   'account-type': 'Account Type',
   'goal-conditional': 'Goal Details',
   timeline: 'Timeline',
   risk: 'Risk Tolerance',
   'investment-style': 'Investment Style',
   themes: 'Investment Themes',
+  'ai-insight-2': 'Priority Check',
   'deep-dive': 'Deep Dive',
   preferences: 'Preferences',
 }
@@ -60,11 +70,13 @@ export function ReviewStep({ answers, onEdit }) {
   if (answers['goal-followup']) reviewOrder.push('goal-followup')
   if (answers['risk-preference']) reviewOrder.push('risk-preference')
   if (answers['financial-picture']) reviewOrder.push('financial-picture')
+  if (answers['ai-insight-1']) reviewOrder.push('ai-insight-1')
   if (answers['account-type']) reviewOrder.push('account-type')
   if (answers['goal-conditional']) reviewOrder.push('goal-conditional')
   reviewOrder.push('timeline', 'risk')
   if (answers['investment-style']) reviewOrder.push('investment-style')
   if (answers.themes) reviewOrder.push('themes')
+  if (answers['ai-insight-2']) reviewOrder.push('ai-insight-2')
   if (answers.deepDive) reviewOrder.push('deep-dive')
   reviewOrder.push('preferences')
 

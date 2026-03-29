@@ -13,6 +13,7 @@ import { RiskDeepDivePrompt, RiskDeepDive } from './steps/RiskDeepDive'
 import { ThemesStep } from './steps/ThemesStep'
 import { PreferencesStep } from './steps/PreferencesStep'
 import { ReviewStep } from './steps/ReviewStep'
+import { AIInsightStep } from './steps/AIInsightStep'
 import { ResultsView } from './ResultsView'
 import { useQuestionnaire } from '../../hooks/useQuestionnaire'
 import { matchPortfolio } from '../../logic/matchingEngine'
@@ -21,6 +22,7 @@ import { matchPortfolio } from '../../logic/matchingEngine'
 const AUTO_ADVANCE_STEPS = new Set([
   'goal', 'goal-followup', 'risk-preference', 'timeline', 'risk',
   'account-type', 'investment-style', 'goal-conditional',
+  'ai-insight-1', 'ai-insight-2',
 ])
 
 // Steps that need a Next / submit button
@@ -38,6 +40,10 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
       return <GoalFollowUpStep step={step} answer={answers['risk-preference']} onSelect={v => onSelect('risk-preference', v)} />
     case 'financial-picture':
       return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goal={answers.goal} goalFollowup={answers['goal-followup']} />
+    case 'ai-insight-1':
+      return <AIInsightStep step="first" answer={answers['ai-insight-1']} onSelect={v => onSelect('ai-insight-1', v)} allAnswers={answers} />
+    case 'ai-insight-2':
+      return <AIInsightStep step="second" answer={answers['ai-insight-2']} onSelect={v => onSelect('ai-insight-2', v)} allAnswers={answers} />
     case 'account-type':
       return <GoalFollowUpStep step={step} answer={answers['account-type']} onSelect={v => onSelect('account-type', v)} />
     case 'goal-conditional':
@@ -82,6 +88,8 @@ export function PrototypeSection() {
       'account-type': q.answers['account-type'],
       'investment-style': q.answers['investment-style'],
       'goal-conditional': q.answers['goal-conditional'],
+      'ai-insight-1': q.answers['ai-insight-1'],
+      'ai-insight-2': q.answers['ai-insight-2'],
       themes: q.answers.themes,
     })
   }, [q.showResults, q.answers])

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowLeft, RotateCcw, Target, Clock, Shield, TrendingUp, Receipt, Globe, DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle } from 'lucide-react'
+import { ArrowLeft, RotateCcw, Target, Clock, Shield, TrendingUp, Receipt, Globe, DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle, Brain } from 'lucide-react'
 import { PortfolioPieChart } from './PortfolioPieChart'
 import { HoldingsTable } from './HoldingsTable'
 import { Button } from '../shared/Button'
@@ -37,7 +37,7 @@ function RiskGauge({ score }) {
 
 const ICON_MAP = {
   Target, Clock, Shield, TrendingUp, Receipt, Globe,
-  DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle,
+  DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle, Brain,
 }
 
 export function ResultsView({ portfolio, riskScore, explanations, onReset }) {
