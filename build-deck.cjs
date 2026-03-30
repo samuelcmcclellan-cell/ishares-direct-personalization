@@ -238,10 +238,10 @@ s2.addText("Intelligent matching, curated output", {
 });
 
 const m2Items = [
-  "AI-adaptive conversation profiles investors",
-  "Matches to 15–20 pre-built model portfolios",
-  "Full iShares + BlackRock active ETFs",
-  "AI personalizes; humans curate portfolios",
+  "12-step adaptive intake + 2 AI open-text insights",
+  "8 risk-scored portfolios from 27 iShares ETFs",
+  "Multi-factor scoring from 6+ behavioral signals",
+  "Theme overlays: AI, Clean, Infra, Defense",
 ];
 m2Items.forEach((item, i) => {
   s2.addText([
