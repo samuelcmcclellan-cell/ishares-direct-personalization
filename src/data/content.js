@@ -17,7 +17,7 @@ export const PROBLEM = {
       "Existing tools offer product screeners, not customized portfolio construction",
       "Competitors are racing to own the personalization layer — Schwab Intelligent Portfolios, Vanguard Digital Advisor, Wealthfront",
       "iShares is the world's leading ETF brand but stops at the product level for Direct investors",
-      "The existing portfolio tickers (AO, AOR, etc) don't have the thematic/active exposures where we are increasingly seeing direct interest",
+      "The existing portfolio tickers (AOA, AOR, AOM, AOK) don't have the thematic/active exposures where we are increasingly seeing direct interest",
     ],
   },
   opportunity: {
