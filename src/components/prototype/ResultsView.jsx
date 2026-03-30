@@ -40,7 +40,7 @@ const ICON_MAP = {
   DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle, Brain,
 }
 
-export function ResultsView({ portfolio, riskScore, explanations, onReset }) {
+export function ResultsView({ portfolio, riskScore, explanations, profileNarrative, onReset }) {
   if (!portfolio) return null
 
   return (
@@ -61,6 +61,13 @@ export function ResultsView({ portfolio, riskScore, explanations, onReset }) {
         <div className="text-xs text-[#028E53] font-semibold uppercase tracking-wider mb-2">Your Recommended Portfolio</div>
         <h2 className="text-3xl font-bold mb-2">{portfolio.name}</h2>
         <p className="text-[#4A4A4A] mb-4">{portfolio.subtitle}</p>
+
+        {profileNarrative && profileNarrative !== 'Balanced investor' && (
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#F5F5EB] border border-[#E5E5DD] rounded-full mb-4">
+            <Brain className="w-3.5 h-3.5 text-[#028E53]" />
+            <span className="text-xs font-medium text-[#4A4A4A]">Investor Profile: {profileNarrative}</span>
+          </div>
+        )}
 
         <div className="flex flex-wrap items-center gap-6">
           <div>

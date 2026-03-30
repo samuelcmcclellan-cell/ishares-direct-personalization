@@ -182,6 +182,45 @@ function buildExplanations(answers, riskScore) {
     explanations.push({ icon: 'Clock', text: 'Your responses suggest shorter-term thinking than your stated timeline — we adjusted toward more stability' })
   }
 
+  // Detected behavioral biases
+  const allBiases = [
+    ...(ai1?.analysis?.detectedBiases || []),
+    ...(ai2?.analysis?.detectedBiases || []),
+  ]
+  const uniqueBiases = [...new Set(allBiases)]
+  if (uniqueBiases.length > 0) {
+    const biasLabels = {
+      'loss-aversion': 'loss sensitivity',
+      overconfidence: 'overconfidence',
+      herding: 'herd-following tendency',
+      'recency-bias': 'recency bias',
+      'status-quo': 'status quo bias',
+      anchoring: 'anchoring',
+      'mental-accounting': 'mental accounting',
+      'present-bias': 'present bias',
+    }
+    const named = uniqueBiases.slice(0, 3).map(b => biasLabels[b] || b).join(', ')
+    explanations.push({ icon: 'Brain', text: `We detected ${named} in your responses — this portfolio is built for comfort through market cycles` })
+  }
+
+  // Stickiness factor
+  const stick1 = ai1?.analysis?.stickinessFactor ?? 0
+  const stick2 = ai2?.analysis?.stickinessFactor ?? 0
+  const maxStick = Math.max(stick1, stick2)
+  const minStick = Math.min(stick1, stick2)
+  if (maxStick > 0.5) {
+    explanations.push({ icon: 'Shield', text: 'Your plan discipline supports a growth-leaning allocation' })
+  } else if (minStick < -0.5) {
+    explanations.push({ icon: 'Shield', text: 'We nudged toward stability to help you stay the course during volatile periods' })
+  }
+
+  // Engagement quality — suggest deep-dive if responses were shallow
+  const eq1 = ai1?.analysis?.engagementQuality
+  const eq2 = ai2?.analysis?.engagementQuality
+  if ((eq1 === 'evasive' || eq1 === 'surface') && (eq2 === 'evasive' || eq2 === 'surface') && !answers.deepDive) {
+    explanations.push({ icon: 'SlidersHorizontal', text: 'For a more precise recommendation, consider the detailed risk deep-dive next time' })
+  }
+
   return explanations
 }
 
@@ -226,10 +265,21 @@ export function matchPortfolio(answers) {
   const drawSignal = answers['income-draw']?.drawSignal
   const implicitIncome = drawSignal === 'regular' && !preferences.income
 
+  // Extract profileNarrative from AI insights (prefer second, fallback to first)
+  const ai1 = answers['ai-insight-1']
+  const ai2 = answers['ai-insight-2']
+  const profileNarrative = ai2?.analysis?.profileNarrative || ai1?.analysis?.profileNarrative || null
+
+  // Stickiness factor for tiebreaking — negative means break ties conservative
+  const stickiness1 = ai1?.analysis?.stickinessFactor ?? 0
+  const stickiness2 = ai2?.analysis?.stickinessFactor ?? 0
+  const avgStickiness = (stickiness1 + stickiness2) / 2
+
   const result = (portfolio) => ({
     portfolio: applyThemeOverlays(portfolio, themes),
     riskScore,
     explanations,
+    profileNarrative,
   })
 
   // 1. Near-term capital preservation auto-trigger
@@ -320,6 +370,8 @@ export function matchPortfolio(answers) {
       if (esDiff !== 0) return esDiff
     }
 
+    // Stickiness tiebreaker: if negative, prefer lower-risk (conservative)
+    if (avgStickiness < -0.3) return a.riskScore - b.riskScore // break tie toward stability
     return b.riskScore - a.riskScore // break tie toward growth
   })
 

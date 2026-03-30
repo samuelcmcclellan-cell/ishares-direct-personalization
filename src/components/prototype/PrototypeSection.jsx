@@ -181,6 +181,7 @@ export function PrototypeSection() {
             portfolio={result.portfolio}
             riskScore={result.riskScore}
             explanations={result.explanations}
+            profileNarrative={result.profileNarrative}
             onReset={q.reset}
           />
         ) : (

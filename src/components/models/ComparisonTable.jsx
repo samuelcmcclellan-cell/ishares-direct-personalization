@@ -23,7 +23,9 @@ export function ComparisonTable() {
   return (
     <div className="mt-16">
       <h3 className="text-xl font-semibold mb-6">Side-by-Side Comparison</h3>
-      <div className="overflow-x-auto bg-white border border-[#E5E5DD] rounded-2xl">
+
+      {/* Desktop: side-by-side table */}
+      <div className="hidden md:block overflow-x-auto bg-white border border-[#E5E5DD] rounded-2xl">
         <table className="w-full text-sm table-fixed">
           <colgroup>
             <col style={{ width: colWidth }} />
@@ -59,6 +61,30 @@ export function ComparisonTable() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile: stacked cards */}
+      <div className="block md:hidden space-y-4">
+        {OPERATING_MODELS.map(model => (
+          <div key={model.id} className="bg-white border border-[#E5E5DD] rounded-2xl overflow-hidden">
+            <div className="py-3 px-5 border-b border-[#E5E5DD] bg-[#FAFAF7]">
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-black">{model.name}</h4>
+            </div>
+            <div className="divide-y divide-[#F5F5EB]">
+              {COMPARISON_DIMENSIONS.map(dim => (
+                <div key={dim.key} className="py-3 px-5 flex justify-between items-start gap-4">
+                  <div className="min-w-0">
+                    <div className="font-medium text-sm text-black">{dim.label}</div>
+                    <div className="text-xs text-[#B9B9AF] mt-0.5">{dim.description}</div>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <CellValue value={model[dim.key]} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

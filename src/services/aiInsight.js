@@ -8,6 +8,11 @@ const NEUTRAL_ANALYSIS = {
   timelineConfidence: 'medium',
   behavioralNotes: 'Standard risk profile based on questionnaire data.',
   suggestedEmphasis: 'balanced',
+  confidenceLevel: 0.5,
+  detectedBiases: [],
+  engagementQuality: 'moderate',
+  stickinessFactor: 0,
+  profileNarrative: 'Balanced investor',
 }
 
 export async function generateQuestion(step, answers) {

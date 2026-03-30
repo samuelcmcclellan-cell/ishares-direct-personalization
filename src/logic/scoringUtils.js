@@ -75,13 +75,25 @@ export function computeRiskScore(answers) {
   }
 
   // AI insight modifiers (wider range: ±2.5 each, ±5.0 combined)
+  // Dampen by confidenceLevel when low (<0.3 halves the modifier)
   const aiInsight1 = answers['ai-insight-1']
   if (aiInsight1?.analysis?.riskModifier) {
-    modifier += aiInsight1.analysis.riskModifier
+    const conf1 = aiInsight1.analysis.confidenceLevel ?? 0.5
+    const dampen1 = conf1 < 0.3 ? 0.5 : 1.0
+    modifier += aiInsight1.analysis.riskModifier * dampen1
   }
   const aiInsight2 = answers['ai-insight-2']
   if (aiInsight2?.analysis?.riskModifier) {
-    modifier += aiInsight2.analysis.riskModifier
+    const conf2 = aiInsight2.analysis.confidenceLevel ?? 0.5
+    const dampen2 = conf2 < 0.3 ? 0.5 : 1.0
+    modifier += aiInsight2.analysis.riskModifier * dampen2
+  }
+
+  // Stickiness factor — low-stickiness investors shouldn't get volatile portfolios
+  const stick1 = aiInsight1?.analysis?.stickinessFactor ?? 0
+  const stick2 = aiInsight2?.analysis?.stickinessFactor ?? 0
+  if (stick1 < -0.5 || stick2 < -0.5) {
+    modifier -= 0.5
   }
 
   // AI timeline confidence — if AI thinks user is shorter-term than stated, nudge down
