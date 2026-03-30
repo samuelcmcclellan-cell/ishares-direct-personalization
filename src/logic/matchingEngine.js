@@ -157,7 +157,8 @@ function buildExplanations(answers, riskScore) {
   // AI behavioral insights — surface when they meaningfully shifted the result
   const ai1 = answers['ai-insight-1']
   const ai2 = answers['ai-insight-2']
-  const totalAiModifier = (ai1?.analysis?.riskModifier || 0) + (ai2?.analysis?.riskModifier || 0)
+  const ai3 = answers['ai-insight-3']
+  const totalAiModifier = (ai1?.analysis?.riskModifier || 0) + (ai2?.analysis?.riskModifier || 0) + (ai3?.analysis?.riskModifier || 0)
 
   if (Math.abs(totalAiModifier) >= 1.5) {
     // AI had a significant influence — show a prominent explanation
@@ -173,12 +174,16 @@ function buildExplanations(answers, riskScore) {
     if (ai2?.analysis?.behavioralNotes && ai2.analysis.behavioralNotes !== 'Standard risk profile based on questionnaire data.') {
       explanations.push({ icon: 'Brain', text: ai2.analysis.behavioralNotes })
     }
+    if (ai3?.analysis?.behavioralNotes && ai3.analysis.behavioralNotes !== 'Standard risk profile based on questionnaire data.') {
+      explanations.push({ icon: 'Eye', text: `Behavioral insight: ${ai3.analysis.behavioralNotes}` })
+    }
   }
 
   // AI timeline confidence mismatch
   const aiTimelineConf1 = ai1?.analysis?.timelineConfidence
   const aiTimelineConf2 = ai2?.analysis?.timelineConfidence
-  if ((aiTimelineConf1 === 'short' || aiTimelineConf2 === 'short') && timeline && ['10-20', '20+'].includes(timeline)) {
+  const aiTimelineConf3 = ai3?.analysis?.timelineConfidence
+  if ((aiTimelineConf1 === 'short' || aiTimelineConf2 === 'short' || aiTimelineConf3 === 'short') && timeline && ['10-20', '20+'].includes(timeline)) {
     explanations.push({ icon: 'Clock', text: 'Your responses suggest shorter-term thinking than your stated timeline — we adjusted toward more stability' })
   }
 
@@ -186,6 +191,7 @@ function buildExplanations(answers, riskScore) {
   const allBiases = [
     ...(ai1?.analysis?.detectedBiases || []),
     ...(ai2?.analysis?.detectedBiases || []),
+    ...(ai3?.analysis?.detectedBiases || []),
   ]
   const uniqueBiases = [...new Set(allBiases)]
   if (uniqueBiases.length > 0) {
@@ -206,8 +212,9 @@ function buildExplanations(answers, riskScore) {
   // Stickiness factor
   const stick1 = ai1?.analysis?.stickinessFactor ?? 0
   const stick2 = ai2?.analysis?.stickinessFactor ?? 0
-  const maxStick = Math.max(stick1, stick2)
-  const minStick = Math.min(stick1, stick2)
+  const stick3 = ai3?.analysis?.stickinessFactor ?? 0
+  const maxStick = Math.max(stick1, stick2, stick3)
+  const minStick = Math.min(stick1, stick2, stick3)
   if (maxStick > 0.5) {
     explanations.push({ icon: 'Shield', text: 'Your plan discipline supports a growth-leaning allocation' })
   } else if (minStick < -0.5) {
@@ -217,7 +224,8 @@ function buildExplanations(answers, riskScore) {
   // Engagement quality — suggest deep-dive if responses were shallow
   const eq1 = ai1?.analysis?.engagementQuality
   const eq2 = ai2?.analysis?.engagementQuality
-  if ((eq1 === 'evasive' || eq1 === 'surface') && (eq2 === 'evasive' || eq2 === 'surface') && !answers.deepDive) {
+  const eq3 = ai3?.analysis?.engagementQuality
+  if ((eq1 === 'evasive' || eq1 === 'surface') && (eq2 === 'evasive' || eq2 === 'surface') && (eq3 === 'evasive' || eq3 === 'surface') && !answers.deepDive) {
     explanations.push({ icon: 'SlidersHorizontal', text: 'For a more precise recommendation, consider the detailed risk deep-dive next time' })
   }
 
@@ -253,11 +261,12 @@ export function matchPortfolio(answers) {
   const themes = answers.themes || {}
   const explanations = buildExplanations(answers, riskScore)
 
-  // Collect AI emphasis signals
+  // Collect AI emphasis signals — prefer insight 3 (revealed behavior) over 2 (stated priorities)
   const aiEmphasis1 = answers['ai-insight-1']?.analysis?.suggestedEmphasis
   const aiEmphasis2 = answers['ai-insight-2']?.analysis?.suggestedEmphasis
-  // Use the most recent non-balanced emphasis, or fall back to first
-  const aiEmphasis = (aiEmphasis2 && aiEmphasis2 !== 'balanced') ? aiEmphasis2
+  const aiEmphasis3 = answers['ai-insight-3']?.analysis?.suggestedEmphasis
+  const aiEmphasis = (aiEmphasis3 && aiEmphasis3 !== 'balanced') ? aiEmphasis3
+    : (aiEmphasis2 && aiEmphasis2 !== 'balanced') ? aiEmphasis2
     : (aiEmphasis1 && aiEmphasis1 !== 'balanced') ? aiEmphasis1
     : null
 
@@ -265,15 +274,17 @@ export function matchPortfolio(answers) {
   const drawSignal = answers['income-draw']?.drawSignal
   const implicitIncome = drawSignal === 'regular' && !preferences.income
 
-  // Extract profileNarrative from AI insights (prefer second, fallback to first)
+  // Extract profileNarrative from AI insights (prefer third for behavioral archetype, then second, then first)
   const ai1 = answers['ai-insight-1']
   const ai2 = answers['ai-insight-2']
-  const profileNarrative = ai2?.analysis?.profileNarrative || ai1?.analysis?.profileNarrative || null
+  const ai3 = answers['ai-insight-3']
+  const profileNarrative = ai3?.analysis?.profileNarrative || ai2?.analysis?.profileNarrative || ai1?.analysis?.profileNarrative || null
 
   // Stickiness factor for tiebreaking — negative means break ties conservative
   const stickiness1 = ai1?.analysis?.stickinessFactor ?? 0
   const stickiness2 = ai2?.analysis?.stickinessFactor ?? 0
-  const avgStickiness = (stickiness1 + stickiness2) / 2
+  const stickiness3 = ai3?.analysis?.stickinessFactor ?? 0
+  const avgStickiness = (stickiness1 + stickiness2 + stickiness3) / 3
 
   const result = (portfolio) => ({
     portfolio: applyThemeOverlays(portfolio, themes),

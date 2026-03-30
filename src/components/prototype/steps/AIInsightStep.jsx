@@ -8,6 +8,7 @@ const MIN_RESPONSE_LENGTH = 20
 const LOADING_MESSAGES = {
   first: { generating: 'Thinking about your situation…', analyzing: 'Understanding your perspective…' },
   second: { generating: 'Reviewing your full profile…', analyzing: 'Synthesizing your priorities…' },
+  third: { generating: 'Building a scenario from your profile…', analyzing: 'Calibrating your risk posture…' },
 }
 
 function LoadingState({ message }) {
@@ -27,7 +28,7 @@ function LoadingState({ message }) {
 }
 
 export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
-  const insightStep = step === 'first' ? 'first' : 'second'
+  const insightStep = step
   const [phase, setPhase] = useState(() => {
     if (answer?.question && answer?.response) return 'asking'
     return 'idle'
@@ -94,12 +95,16 @@ export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-2">
-        {insightStep === 'first' ? 'Let\u2019s go a bit deeper' : 'One last question'}
+        {insightStep === 'first' ? 'Let\u2019s go a bit deeper'
+          : insightStep === 'third' ? 'Let\u2019s make this real'
+          : 'One last question'}
       </h2>
       <p className="text-[#7A7A7A] mb-6">
         {insightStep === 'first'
           ? 'Your numbers tell part of the story. Help us understand the person behind them.'
-          : 'Before we build your portfolio, we want to make sure we understand what matters most to you.'}
+          : insightStep === 'third'
+            ? 'Numbers and choices only go so far. Let\u2019s see how you\u2019d handle a scenario built from your actual situation.'
+            : 'Before we build your portfolio, we want to make sure we understand what matters most to you.'}
       </p>
 
       <AnimatePresence mode="popLayout">

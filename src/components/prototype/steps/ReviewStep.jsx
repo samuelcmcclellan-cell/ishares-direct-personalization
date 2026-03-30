@@ -45,6 +45,7 @@ function getAnswerDisplay(stepId, answer) {
     }
     case 'ai-insight-1':
     case 'ai-insight-2':
+    case 'ai-insight-3':
       return answer.response ? truncate(answer.response) : 'Not answered'
     default:
       return ''
@@ -67,6 +68,7 @@ const DISPLAY_LABELS = {
   'fomo-reaction': 'Performance Comparison',
   'income-draw': 'Withdrawal Plans',
   'ai-insight-2': 'Priority Check',
+  'ai-insight-3': 'Behavioral Scenario',
   'deep-dive': 'Deep Dive',
   preferences: 'Preferences',
 }
@@ -82,6 +84,7 @@ export function ReviewStep({ answers, onEdit }) {
   if (answers['goal-conditional']) reviewOrder.push('goal-conditional')
   reviewOrder.push('timeline', 'risk')
   if (answers['fomo-reaction']) reviewOrder.push('fomo-reaction')
+  if (answers['ai-insight-3']) reviewOrder.push('ai-insight-3')
   if (answers['income-draw']) reviewOrder.push('income-draw')
   if (answers['investment-style']) reviewOrder.push('investment-style')
   if (answers.themes) reviewOrder.push('themes')

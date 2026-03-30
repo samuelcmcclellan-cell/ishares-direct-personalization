@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 const PHASES = [
   { label: 'Goal', stepIds: ['goal', 'goal-followup', 'risk-preference'] },
   { label: 'Finances', stepIds: ['financial-picture', 'account-type', 'goal-conditional'] },
-  { label: 'Risk', stepIds: ['timeline', 'risk', 'deep-dive-prompt', 'deep-dive'] },
+  { label: 'Risk', stepIds: ['timeline', 'risk', 'ai-insight-3', 'deep-dive-prompt', 'deep-dive'] },
   { label: 'Style', stepIds: ['investment-style', 'themes', 'preferences'] },
   { label: 'Review', stepIds: ['review'] },
 ]

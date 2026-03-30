@@ -23,7 +23,7 @@ const AUTO_ADVANCE_STEPS = new Set([
   'goal', 'goal-followup', 'risk-preference', 'timeline', 'risk',
   'account-type', 'investment-style', 'goal-conditional',
   'existing-holdings', 'fomo-reaction', 'income-draw',
-  'ai-insight-1', 'ai-insight-2',
+  'ai-insight-1', 'ai-insight-2', 'ai-insight-3',
 ])
 
 // Steps that need a Next / submit button
@@ -45,6 +45,8 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
       return <AIInsightStep step="first" answer={answers['ai-insight-1']} onSelect={v => onSelect('ai-insight-1', v)} allAnswers={answers} />
     case 'ai-insight-2':
       return <AIInsightStep step="second" answer={answers['ai-insight-2']} onSelect={v => onSelect('ai-insight-2', v)} allAnswers={answers} />
+    case 'ai-insight-3':
+      return <AIInsightStep step="third" answer={answers['ai-insight-3']} onSelect={v => onSelect('ai-insight-3', v)} allAnswers={answers} />
     case 'account-type':
       return <GoalFollowUpStep step={step} answer={answers['account-type']} onSelect={v => onSelect('account-type', v)} />
     case 'goal-conditional':
@@ -100,6 +102,7 @@ export function PrototypeSection() {
       'income-draw': q.answers['income-draw'],
       'ai-insight-1': q.answers['ai-insight-1'],
       'ai-insight-2': q.answers['ai-insight-2'],
+      'ai-insight-3': q.answers['ai-insight-3'],
       themes: q.answers.themes,
     })
   }, [q.showResults, q.answers])

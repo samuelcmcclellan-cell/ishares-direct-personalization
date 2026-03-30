@@ -1,6 +1,7 @@
 const FALLBACK_QUESTIONS = {
-  first: "When you think about your financial future, what keeps you up at night — or what excites you most? Understanding your emotional relationship with money helps us build a portfolio that you'll actually stick with.",
-  second: "Looking at the full picture of what you've shared, what's the one thing you'd want your portfolio to get absolutely right — even if it meant compromising on something else?",
+  first: "What's the one money decision that still keeps you up at night — or the one you're most proud of?",
+  second: "If your portfolio could only get one thing absolutely right, what would it be?",
+  third: "Your portfolio drops 15% while the overall market is flat. A colleague just moved to cash and feels great about it. What do you actually do?",
 }
 
 const NEUTRAL_ANALYSIS = {
@@ -218,6 +219,58 @@ function computeProfileObservations(answers, step) {
     }
   }
 
+  // For step 3, examine risk behavioral data for stated vs. revealed gaps
+  if (step === 'third') {
+    if (riskScore >= 8 && riskPrefId <= 3) {
+      observations.push({
+        id: 'RISK_BRAVADO',
+        severity: 'high',
+        summary: `Claims they'd buy aggressively in a crash (riskScore ${riskScore}) but growth preference is only ${riskPrefId}/5`,
+        hook: 'They claim they\'d buy aggressively in a crash, but their growth preference is moderate — is this real conviction or just what they think a smart investor would say?',
+      })
+    }
+
+    if (fomoScore >= 3 && riskScore >= 8) {
+      observations.push({
+        id: 'FOMO_CONTRADICTS_RISK',
+        severity: 'high',
+        summary: `Would chase others' returns (fomoScore ${fomoScore}) but also claims to buy during drops (riskScore ${riskScore})`,
+        hook: 'Claims to be a contrarian buyer in downturns but also chases others\' returns — these are opposing instincts. Which one shows up under real pressure?',
+      })
+    }
+
+    if (holdingsSignal === 'equity-heavy' && riskScore <= 4) {
+      observations.push({
+        id: 'CAUTIOUS_BUT_EXPERIENCED',
+        severity: 'medium',
+        summary: `Already holds aggressive assets (equity-heavy) but says they'd sell in a downturn (riskScore ${riskScore})`,
+        hook: 'Already holds aggressive assets but says they\'d sell in a downturn — have they actually lived through one, or did they inherit/auto-invest into this position?',
+      })
+    }
+
+    if (riskPrefId >= 4 && riskScore >= 8 && fomoScore <= 1) {
+      observations.push({
+        id: 'ALL_SIGNALS_ALIGNED',
+        severity: 'medium',
+        summary: `All risk signals point aggressive: preference ${riskPrefId}/5, drop reaction ${riskScore}/10, low FOMO (${fomoScore})`,
+        hook: 'Every risk signal points the same direction — high conviction, low FOMO, aggressive stance. Is this genuine self-knowledge or has the user figured out the \'right\' answers?',
+      })
+    }
+
+    // Cross-reference first AI insight
+    if (answers['ai-insight-1']?.analysis) {
+      const ai1 = answers['ai-insight-1'].analysis
+      if (ai1.riskModifier < -0.5 && riskScore >= 8) {
+        observations.push({
+          id: 'AI1_ANXIETY_VS_RISK_BRAVADO',
+          severity: 'high',
+          summary: `First open-ended response revealed anxiety (modifier ${ai1.riskModifier.toFixed(1)}) but behavioral questions show aggressive risk tolerance (${riskScore}/10)`,
+          hook: 'First open-ended response revealed financial anxiety, but the behavioral questions show aggressive risk tolerance — the written words told a different story than the checkboxes.',
+        })
+      }
+    }
+  }
+
   return observations
 }
 
@@ -318,15 +371,16 @@ const SECOND_CATEGORIES = [
 ]
 
 const TECHNIQUES = [
-  { id: 'scenario', label: 'Specific Scenario', desc: 'Start with "Imagine..." and paint a vivid, specific situation relevant to their profile.' },
-  { id: 'retrospective', label: 'Retrospective', desc: 'Ask about a real past experience: "Tell me about a time when..." or "Think back to..."' },
-  { id: 'third-person', label: 'Third Person', desc: 'Ask them to advise someone else with their exact profile: "If your best friend had your exact financial situation..."' },
-  { id: 'forced-choice', label: 'Forced Choice Trade-off', desc: 'Present two options and force a pick: "Would you rather X or Y?" Make both options plausible.' },
-  { id: 'counterfactual', label: 'Counterfactual', desc: 'Ask about an alternate timeline: "If you had started investing 5 years ago..." or "If you woke up tomorrow with double your savings..."' },
-  { id: 'future-self', label: 'Future Self', desc: 'Ask them to consult their future self: "What would your 65-year-old self say about this decision?"' },
+  { id: 'scenario', label: 'Specific Scenario', desc: 'Drop them into a moment: "Your portfolio just dropped 25% in 3 months. What\'s your first move?"' },
+  { id: 'retrospective', label: 'Retrospective', desc: 'Ask about a real past moment with money — a decision, a loss, a windfall. Keep it tight.' },
+  { id: 'third-person', label: 'Third Person', desc: 'Ask them to advise someone in their exact situation. One sentence setup, one sentence question.' },
+  { id: 'forced-choice', label: 'Forced Choice', desc: 'Two options, pick one. "Would you rather [X] or [Y]?" Both must be plausible and revealing.' },
+  { id: 'counterfactual', label: 'What-If', desc: 'One sharp hypothetical. "What if your savings doubled overnight — what changes?" No multi-clause setups.' },
+  { id: 'future-self', label: 'Future Self', desc: 'One question from the perspective of their older self looking back at this moment.' },
 ]
 
 function pickAngleCombination(step, observations) {
+  // Third step uses its own prompt logic (scenario-based), but we still pick an angle for fallback compatibility
   const categories = step === 'first' ? FIRST_CATEGORIES : SECOND_CATEGORIES
   const highSeverity = observations.filter(o => o.severity === 'high')
 
@@ -379,6 +433,33 @@ GUARDRAILS:
   if (action === 'generate-question') {
     const angle = pickAngleCombination(step, observations)
 
+    if (step === 'third') {
+      return `You are an intake assistant for a portfolio recommendation tool at BlackRock's iShares Direct Personalization platform. You are a sharp financial advisor who doesn't take stated risk tolerance at face value — you test it with vivid, realistic scenarios.
+
+INVESTOR PROFILE:
+${userProfile}
+
+NOTABLE OBSERVATIONS ABOUT THIS PERSON (build your scenario around one of these):
+${observationsBlock}
+
+YOUR TASK: Construct a realistic, personalized financial scenario using this investor's ACTUAL numbers, then ask them to walk through what they'd think and do.
+
+SCENARIO REQUIREMENTS:
+1. Use their real numbers to make the scenario feel personal: savings ($${(answers['financial-picture']?.currentSavings || 0).toLocaleString()}), income ($${(answers['financial-picture']?.annualIncome || 0).toLocaleString()}), age (${answers['financial-picture']?.currentAge || 'unknown'}), goal (${answers.goal?.label || 'unspecified'}).
+2. Create tension with their stated risk behavior — they said they'd "${answers.risk?.label || 'unknown'}" during a 20% drop.
+3. Do NOT repeat the 20% drop scenario. Use a different angle: prolonged bear market, sector crash, life event + market event, or social pressure.
+4. MAXIMUM 40 WORDS for the full scenario + question. Two sentences max: one for the setup, one for the question.
+5. No preamble. Jump straight in. The scenario IS the question.
+6. If a HIGH-severity observation exists above, your scenario MUST target it.
+
+GOOD example: "Six months in, your $500K is now $380K and still falling. Your partner wants you to sell everything. What do you tell them — and do you mean it?"
+
+BAD example: "Imagine that over the course of the next 12 months, your portfolio which currently sits at $500,000 experiences a prolonged downturn due to macroeconomic headwinds, falling approximately 25% to around $375,000, while simultaneously your colleague at work mentions that they moved their entire portfolio to cash three months ago and are feeling very confident about that decision. Walk me through what would go through your mind in that situation and what concrete steps you would consider taking."
+
+Return ONLY the question text.
+${guardrails}`
+    }
+
     if (step === 'first') {
       return `You are an intake assistant for a portfolio recommendation tool at BlackRock's iShares Direct Personalization platform. You are a sharp financial advisor who notices things about each investor that a generic questionnaire can't capture.
 
@@ -393,11 +474,23 @@ Category: ${angle.category.label} — ${angle.category.desc}
 Technique: ${angle.technique.label} — ${angle.technique.desc}
 
 HARD REQUIREMENTS — your question will be rejected if any of these fail:
-1. Your question MUST reference at least one specific number or fact from the profile above (their age, savings amount, goal type, income, risk preference level, or existing holdings).
-2. Your question MUST NOT be answerable by someone who hasn't provided this specific profile. If a generic person could answer it, it's too vague.
-3. Keep to 1-3 sentences. No preamble, no "I noticed that...", no "Based on your profile...". Jump straight into the question.
-4. Do NOT start with "How do you feel about..." — find a more specific, sharper entry point.
-5. Use the Technique above to FRAME the question (e.g., if Scenario, start with "Imagine..."; if Retrospective, start with "Think back to...").
+1. MAXIMUM 30 WORDS. No exceptions. Count them. If it's over 30 words, cut it down.
+2. The question MUST feel personalized — reference their actual profile details (numbers, goal, risk level, etc.) so it couldn't be asked to just anyone.
+3. The question must NOT be answerable by someone who hasn't provided this profile.
+4. No preamble. No "I noticed...", no "Based on your profile...", no "Given that you...". Start with the punch.
+5. Never start with a subordinate clause ("If you had...", "Considering that...", "With your..."). Lead with the question or the scenario.
+6. Use the Technique above to frame the question, but keep it tight.
+
+GOOD examples (notice: short, specific, direct):
+- "You've saved $500K but picked maximum growth. What's the worst outcome you've actually pictured?"
+- "Your $200K drops to $140K in 6 months. What's your first call — hold, sell, or buy more?"
+- "At 28 with $30K saved, what's making you play it so safe?"
+- "Would you rather miss a 20% rally or sit through a 20% crash? Which one stings more?"
+
+BAD examples (too long, too much setup, meandering):
+- "If you had begun your investment journey 5 years ago with your current savings of $500K and a strong focus on growth, how would your perspective on risk and volatility have evolved?"
+- "Given that you're currently 35 years old with $200,000 in savings and a preference for aggressive growth, how would you describe your emotional reaction if your portfolio experienced a significant downturn?"
+- "Thinking about your current financial situation where you earn $150K annually and have saved $80K, what would you say is the primary factor that influences your approach to investment risk?"
 
 Return ONLY the question text.
 ${guardrails}`
@@ -415,16 +508,70 @@ Category: ${angle.category.label} — ${angle.category.desc}
 Technique: ${angle.technique.label} — ${angle.technique.desc}
 
 HARD REQUIREMENTS — your question will be rejected if any of these fail:
-1. Your question MUST reference at least one specific number or fact from the profile above.
-2. Your question MUST NOT be answerable by someone who hasn't provided this specific profile.
-3. Keep to 1-3 sentences. No preamble. Jump straight in.
-4. Do NOT repeat the emotional territory of the earlier behavioral question (shown in the profile above). Find a genuinely NEW angle.
-5. If a HIGH-severity observation exists above, your question MUST address it directly. Name the tension.
-6. Use the Technique above to FRAME the question.
+1. MAXIMUM 30 WORDS. No exceptions. Count them.
+2. The question MUST feel personalized — reference their actual profile details so it couldn't be asked to just anyone.
+3. The question must NOT be answerable by a generic person.
+4. Do NOT repeat the emotional territory of the earlier behavioral question (shown above). Find a NEW angle.
+5. If a HIGH-severity observation exists above, name the tension directly. Don't dance around it.
+6. No preamble. No subordinate clause openers ("If you...", "Given that...", "Considering..."). Start with the punch.
+7. Use the Technique above to frame the question, but brevity wins over technique fidelity.
+
+GOOD examples:
+- "You want wealth-building but said you'd sell in a crash. Which instinct wins when it's real money?"
+- "Your savings rate is 25% but your balance is only $18K. What happened?"
+- "If your portfolio gets one thing right and one thing wrong, what matters most?"
+
+BAD examples:
+- "Looking at the totality of your financial profile including your goal of wealth building, your conservative risk tolerance, and your 20-year timeline, what would you say is the single most important outcome..."
 
 Return ONLY the question text.
 ${guardrails}`
     }
+  }
+
+  if (action === 'analyze-response' && step === 'third') {
+    return `You are an analytical engine for a portfolio recommendation tool at BlackRock's iShares Direct Personalization platform. You are analyzing a user's response to a personalized behavioral scenario — a stress test designed to reveal whether their stated risk tolerance matches their revealed behavior.
+
+User profile:
+${userProfile}
+
+Profile observations we detected:
+${observationsBlock}
+
+CONTEXT: This investor previously answered two multiple-choice risk questions:
+- 20% portfolio drop reaction: ${RISK_LABELS[answers.risk?.id] || 'unknown'}
+- FOMO reaction to friend's higher returns: ${FOMO_LABELS[answers['fomo-reaction']?.id] || 'unknown'}
+
+Your task: Analyze the user's narrative response and compare it against their multiple-choice answers. Return a JSON object with ALL of these fields:
+
+{
+  "riskModifier": <number between -1.5 and 1.5>,
+  "timelineConfidence": <"short" | "medium" | "long">,
+  "behavioralNotes": <1-2 sentence insight for display, written in third person>,
+  "suggestedEmphasis": <"growth" | "stability" | "income" | "balanced">,
+  "confidenceLevel": <number 0.0 to 1.0>,
+  "detectedBiases": <array of strings from: "loss-aversion", "overconfidence", "status-quo-bias", "anchoring", "recency-bias", "herding", "mental-accounting", "optimism-bias", "sunk-cost-fallacy", "disposition-effect">,
+  "engagementQuality": <"deep" | "moderate" | "surface" | "evasive">,
+  "stickinessFactor": <number -1.0 to 1.0>,
+  "profileNarrative": <1 sentence behavioral archetype label>
+}
+
+FIELD-BY-FIELD GUIDANCE FOR THIS STEP:
+
+riskModifier (-1.5 to +1.5) — THIS IS A CALIBRATION CHECK, not an amplifier:
+- Near zero (±0.3): Narrative confirms stated risk posture — they walk the talk.
+- Negative (toward -1.5): Narrative reveals hidden anxiety despite aggressive multiple-choice answers. They said they'd buy the dip but their scenario response shows panic, hesitation, or social susceptibility.
+- Positive (toward +1.5): Narrative reveals genuine conviction behind conservative answers. E.g., "I know my risk tolerance is low but I'd still hold through a dip because I trust the long-term plan."
+- The key question: does the narrative CONFIRM or CONTRADICT the checkboxes?
+
+behavioralNotes: Focus on the gap (or alignment) between stated and revealed risk tolerance. This note should say something the multiple-choice answers alone couldn't tell you. Example: "Scenario response reveals genuine contrarian discipline — they'd ignore the colleague's cash move and see the dip as an opportunity, consistent with their stated risk posture."
+
+suggestedEmphasis: Weight toward what the narrative reveals about the user's ACTUAL comfort zone, not their aspirational one.
+
+profileNarrative: Frame as a behavioral archetype. Examples: "Disciplined contrarian", "Aspirational risk-taker", "Pragmatic safety-seeker", "Socially influenced but self-aware", "Cool-headed accumulator."
+
+Return ONLY valid JSON, no markdown fences, no explanation.
+${guardrails}`
   }
 
   if (action === 'analyze-response') {
@@ -594,10 +741,11 @@ export default async function handler(req, res) {
       const cleaned = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()
       const analysis = JSON.parse(cleaned)
 
-      // Validate and clamp all fields
+      // Validate and clamp all fields (third step uses narrower ±1.5 range)
+      const riskModRange = step === 'third' ? 1.5 : 2.5
       const validated = {
         // Existing fields
-        riskModifier: Math.max(-2.5, Math.min(2.5, Number(analysis.riskModifier) || 0)),
+        riskModifier: Math.max(-riskModRange, Math.min(riskModRange, Number(analysis.riskModifier) || 0)),
         timelineConfidence: ['short', 'medium', 'long'].includes(analysis.timelineConfidence)
           ? analysis.timelineConfidence : 'medium',
         behavioralNotes: typeof analysis.behavioralNotes === 'string' && analysis.behavioralNotes.length > 0

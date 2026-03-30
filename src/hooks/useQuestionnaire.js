@@ -72,6 +72,7 @@ export function useQuestionnaire() {
         delete next['goal-conditional']
         delete next['ai-insight-1']
         delete next['ai-insight-2']
+        delete next['ai-insight-3']
       }
       return next
     })

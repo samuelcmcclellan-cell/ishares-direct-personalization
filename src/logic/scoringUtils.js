@@ -88,21 +88,29 @@ export function computeRiskScore(answers) {
     const dampen2 = conf2 < 0.3 ? 0.5 : 1.0
     modifier += aiInsight2.analysis.riskModifier * dampen2
   }
+  const aiInsight3 = answers['ai-insight-3']
+  if (aiInsight3?.analysis?.riskModifier) {
+    const conf3 = aiInsight3.analysis.confidenceLevel ?? 0.5
+    const dampen3 = conf3 < 0.3 ? 0.5 : 1.0
+    modifier += aiInsight3.analysis.riskModifier * dampen3
+  }
 
   // Stickiness factor — low-stickiness investors shouldn't get volatile portfolios
   const stick1 = aiInsight1?.analysis?.stickinessFactor ?? 0
   const stick2 = aiInsight2?.analysis?.stickinessFactor ?? 0
-  if (stick1 < -0.5 || stick2 < -0.5) {
+  const stick3 = aiInsight3?.analysis?.stickinessFactor ?? 0
+  if (stick1 < -0.5 || stick2 < -0.5 || stick3 < -0.5) {
     modifier -= 0.5
   }
 
   // AI timeline confidence — if AI thinks user is shorter-term than stated, nudge down
   const aiTimelineConf1 = aiInsight1?.analysis?.timelineConfidence
   const aiTimelineConf2 = aiInsight2?.analysis?.timelineConfidence
+  const aiTimelineConf3 = aiInsight3?.analysis?.timelineConfidence
   const timeline = resolveTimeline(answers)
   const longTimelines = ['10-20', '20+']
   if (timeline && longTimelines.includes(timeline)) {
-    if (aiTimelineConf1 === 'short' || aiTimelineConf2 === 'short') {
+    if (aiTimelineConf1 === 'short' || aiTimelineConf2 === 'short' || aiTimelineConf3 === 'short') {
       modifier -= 1.0 // AI detects short-term thinking despite long stated timeline
     } else if (aiTimelineConf1 === 'medium' && aiTimelineConf2 === 'short') {
       modifier -= 0.75

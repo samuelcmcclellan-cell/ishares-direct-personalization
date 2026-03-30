@@ -105,6 +105,13 @@ export const STEPS = [
     ],
   },
   {
+    id: "ai-insight-3",
+    title: "Let's make this real",
+    description: "Numbers and choices only go so far. Let's see how you'd handle a scenario built from your actual situation.",
+    type: "ai-insight",
+    insightStep: "third",
+  },
+  {
     id: "income-draw",
     title: "Do you expect to withdraw from this portfolio in the next few years?",
     description: "Even if your goal isn't income, knowing if you'll need to draw matters.",

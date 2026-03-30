@@ -1,6 +1,7 @@
 const FALLBACK_QUESTIONS = {
-  first: "When you think about your financial future, what keeps you up at night — or what excites you most? Understanding your emotional relationship with money helps us build a portfolio that you'll actually stick with.",
-  second: "Looking at the full picture of what you've shared, what's the one thing you'd want your portfolio to get absolutely right — even if it meant compromising on something else?",
+  first: "What's the one money decision that still keeps you up at night — or the one you're most proud of?",
+  second: "If your portfolio could only get one thing absolutely right, what would it be?",
+  third: "Your portfolio drops 15% while the overall market is flat. A colleague just moved to cash and feels great about it. What do you actually do?",
 }
 
 const NEUTRAL_ANALYSIS = {
