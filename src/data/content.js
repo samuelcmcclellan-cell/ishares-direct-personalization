@@ -43,11 +43,6 @@ export const VALUE_PILLARS = [
     description: "Every recommendation uses real iShares and BlackRock ETFs with transparent costs.",
   },
   {
-    icon: "Scale",
-    title: "Periodically Rebalanced",
-    description: "Portfolios are rules-based but periodically updated to reflect current capital market assumptions.",
-  },
-  {
     icon: "Shield",
     title: "Built for Integration",
     description: "Designed for future integration into existing iShares tools — Core Builder, Portfolio Analyzer, Fund Screener.",

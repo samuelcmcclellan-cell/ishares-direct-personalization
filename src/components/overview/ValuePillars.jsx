@@ -1,16 +1,16 @@
-import { Target, Blocks, Scale, Shield } from 'lucide-react'
+import { Target, Blocks, Shield } from 'lucide-react'
 import { VALUE_PILLARS } from '../../data/content'
 
-const ICONS = { Target, Blocks, Scale, Shield }
+const ICONS = { Target, Blocks, Shield }
 
 export function ValuePillars() {
   return (
     <div className="py-16">
       <h2 className="text-3xl font-bold tracking-tight text-center mb-4">How It Works</h2>
       <p className="text-[#7A7A7A] text-center mb-12 max-w-2xl mx-auto">
-        Four pillars that make iShares Direct Personalization possible.
+        Three pillars that make iShares Direct Personalization possible.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {VALUE_PILLARS.map((pillar, i) => {
           const Icon = ICONS[pillar.icon]
           return (
