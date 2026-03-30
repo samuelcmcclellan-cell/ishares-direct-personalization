@@ -5,7 +5,7 @@ import { Badge } from '../shared/Badge'
 const BADGE_VALUES = new Set([
   'Low', 'None', '$', 'High', 'Moderate', 'Medium', '$$',
   'Medium-High', 'Moderate-High', '$$$', 'Very High', '$$$$',
-  '~5', '15–20', '50–200+',
+  '~5', '33', '15–20', '50–200+',
 ])
 
 function CellValue({ value }) {
