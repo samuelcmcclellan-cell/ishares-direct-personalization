@@ -34,6 +34,18 @@ export const STEPS = [
     type: "financial-picture",
   },
   {
+    id: "existing-holdings",
+    title: "Do you currently have investments?",
+    description: "Understanding your existing portfolio helps us complement rather than duplicate.",
+    type: "single-select",
+    options: [
+      { id: "none",       label: "No investments yet",                 description: "This would be my first portfolio",         holdingsSignal: "none" },
+      { id: "bond-heavy", label: "Yes — mostly bonds or cash savings", description: "CDs, savings bonds, money market, 401(k) in target-date", holdingsSignal: "bond-heavy" },
+      { id: "balanced",   label: "Yes — a mix of stocks and bonds",    description: "Diversified across asset classes",          holdingsSignal: "balanced" },
+      { id: "equity-heavy", label: "Yes — mostly stocks or equity funds", description: "Individual stocks, index funds, or equity ETFs", holdingsSignal: "equity-heavy" },
+    ],
+  },
+  {
     id: "ai-insight-1",
     title: "Let\u2019s go a bit deeper",
     description: "Your numbers tell part of the story. Help us understand the person behind them.",
@@ -81,6 +93,30 @@ export const STEPS = [
     ],
   },
   {
+    id: "fomo-reaction",
+    title: "Imagine your friend's portfolio gained 30% last year and yours gained 10%. How do you feel?",
+    description: "This helps us understand how you react to relative performance.",
+    type: "single-select",
+    options: [
+      { id: "switch",     label: "I'd want to switch to their strategy",  fomoScore: 3,  description: "I hate missing out on gains" },
+      { id: "curious",    label: "I'd be curious but wouldn't change",    fomoScore: 1,  description: "Interesting, but I trust my plan" },
+      { id: "indifferent", label: "Doesn't bother me at all",             fomoScore: 0,  description: "My plan is my plan" },
+      { id: "cautious",   label: "I'd worry they're taking too much risk", fomoScore: -1, description: "Higher returns mean higher risk" },
+    ],
+  },
+  {
+    id: "income-draw",
+    title: "Do you expect to withdraw from this portfolio in the next few years?",
+    description: "Even if your goal isn't income, knowing if you'll need to draw matters.",
+    type: "single-select",
+    options: [
+      { id: "no-draw",      label: "No — purely accumulation",           drawSignal: "none",    description: "Won't touch it for many years" },
+      { id: "maybe-partial", label: "Maybe a partial withdrawal",         drawSignal: "partial", description: "Might need some within 3–5 years" },
+      { id: "regular-draw",  label: "Yes — I'll draw periodically",       drawSignal: "regular", description: "Need periodic income or withdrawals" },
+      { id: "lump-sum",      label: "Yes — one large withdrawal planned", drawSignal: "lump",    description: "Saving toward a specific payout" },
+    ],
+  },
+  {
     id: "investment-style",
     title: "Which investing approach appeals to you?",
     description: "This helps us select the right mix of fund types.",
@@ -97,11 +133,11 @@ export const STEPS = [
     description: "Optional — select any themes you'd like reflected in your portfolio.",
     type: "multi-select",
     options: [
-      { id: "ai",            label: "Artificial Intelligence",   icon: "Brain",       description: "Companies driving the AI revolution" },
-      { id: "clean-energy",   label: "Clean Energy",             icon: "Zap",         description: "Renewable energy and sustainability" },
-      { id: "innovation",    label: "Innovation & Disruption",  icon: "Lightbulb",   description: "Companies transforming industries" },
-      { id: "dividend",      label: "Dividend Growers",         icon: "TrendingUp",  description: "Companies with rising dividend track records" },
-      { id: "none",          label: "No thematic preference",   icon: "MinusCircle", description: "Stick with broad market exposure" },
+      { id: "ai",            label: "Artificial Intelligence",     icon: "Brain",       description: "Companies driving the AI revolution" },
+      { id: "clean-energy",  label: "Clean Energy",                icon: "Zap",         description: "Solar, wind, and renewable energy companies" },
+      { id: "power-infra",   label: "Power & Infrastructure",      icon: "Factory",     description: "Grid operators, utilities, electrical equipment" },
+      { id: "defense",       label: "Defense & Aerospace",         icon: "Shield",      description: "Defense contractors and aerospace companies" },
+      { id: "none",          label: "No thematic preference",      icon: "MinusCircle", description: "Stick with broad market exposure" },
     ],
   },
   {

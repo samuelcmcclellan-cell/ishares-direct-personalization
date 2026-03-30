@@ -22,6 +22,7 @@ import { matchPortfolio } from '../../logic/matchingEngine'
 const AUTO_ADVANCE_STEPS = new Set([
   'goal', 'goal-followup', 'risk-preference', 'timeline', 'risk',
   'account-type', 'investment-style', 'goal-conditional',
+  'existing-holdings', 'fomo-reaction', 'income-draw',
   'ai-insight-1', 'ai-insight-2',
 ])
 
@@ -52,6 +53,12 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
       return <TimelineStep step={step} answer={answers.timeline} onSelect={v => onSelect('timeline', v)} />
     case 'risk':
       return <RiskStep step={step} answer={answers.risk} onSelect={v => onSelect('risk', v)} />
+    case 'existing-holdings':
+      return <GoalFollowUpStep step={step} answer={answers['existing-holdings']} onSelect={v => onSelect('existing-holdings', v)} />
+    case 'fomo-reaction':
+      return <GoalFollowUpStep step={step} answer={answers['fomo-reaction']} onSelect={v => onSelect('fomo-reaction', v)} />
+    case 'income-draw':
+      return <GoalFollowUpStep step={step} answer={answers['income-draw']} onSelect={v => onSelect('income-draw', v)} />
     case 'investment-style':
       return <GoalFollowUpStep step={step} answer={answers['investment-style']} onSelect={v => onSelect('investment-style', v)} />
     case 'themes':
@@ -85,9 +92,12 @@ export function PrototypeSection() {
       'goal-followup': q.answers['goal-followup'],
       'risk-preference': q.answers['risk-preference'],
       'financial-picture': q.answers['financial-picture'],
+      'existing-holdings': q.answers['existing-holdings'],
       'account-type': q.answers['account-type'],
       'investment-style': q.answers['investment-style'],
       'goal-conditional': q.answers['goal-conditional'],
+      'fomo-reaction': q.answers['fomo-reaction'],
+      'income-draw': q.answers['income-draw'],
       'ai-insight-1': q.answers['ai-insight-1'],
       'ai-insight-2': q.answers['ai-insight-2'],
       themes: q.answers.themes,

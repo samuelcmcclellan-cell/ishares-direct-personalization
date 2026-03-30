@@ -1,6 +1,6 @@
-import { Brain, Zap, Lightbulb, TrendingUp, MinusCircle } from 'lucide-react'
+import { Brain, Zap, Building2, Shield, MinusCircle } from 'lucide-react'
 
-const ICONS = { Brain, Zap, Lightbulb, TrendingUp, MinusCircle }
+const ICONS = { Brain, Zap, Factory: Building2, Shield, MinusCircle }
 
 export function ThemesStep({ step, answer, onSelect }) {
   const selected = answer || {}

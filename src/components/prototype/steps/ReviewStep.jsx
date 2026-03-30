@@ -23,6 +23,9 @@ function getAnswerDisplay(stepId, answer) {
     case 'account-type':
     case 'investment-style':
     case 'goal-conditional':
+    case 'existing-holdings':
+    case 'fomo-reaction':
+    case 'income-draw':
       return answer.label
     case 'deep-dive':
       return Object.values(answer).map(a => a.label).join(', ')
@@ -31,7 +34,7 @@ function getAnswerDisplay(stepId, answer) {
     case 'themes': {
       const activeThemes = Object.entries(answer).filter(([, v]) => v).map(([k]) => k)
       if (activeThemes.length === 0) return 'None selected'
-      const themeMap = { ai: 'AI', 'clean-energy': 'Clean Energy', innovation: 'Innovation', dividend: 'Dividends', none: 'None' }
+      const themeMap = { ai: 'AI', 'clean-energy': 'Clean Energy', 'power-infra': 'Power & Infrastructure', defense: 'Defense & Aerospace', none: 'None' }
       return activeThemes.map(k => themeMap[k] || k).join(', ')
     }
     case 'preferences': {
@@ -60,6 +63,9 @@ const DISPLAY_LABELS = {
   risk: 'Risk Tolerance',
   'investment-style': 'Investment Style',
   themes: 'Investment Themes',
+  'existing-holdings': 'Current Investments',
+  'fomo-reaction': 'Performance Comparison',
+  'income-draw': 'Withdrawal Plans',
   'ai-insight-2': 'Priority Check',
   'deep-dive': 'Deep Dive',
   preferences: 'Preferences',
@@ -70,10 +76,13 @@ export function ReviewStep({ answers, onEdit }) {
   if (answers['goal-followup']) reviewOrder.push('goal-followup')
   if (answers['risk-preference']) reviewOrder.push('risk-preference')
   if (answers['financial-picture']) reviewOrder.push('financial-picture')
+  if (answers['existing-holdings']) reviewOrder.push('existing-holdings')
   if (answers['ai-insight-1']) reviewOrder.push('ai-insight-1')
   if (answers['account-type']) reviewOrder.push('account-type')
   if (answers['goal-conditional']) reviewOrder.push('goal-conditional')
   reviewOrder.push('timeline', 'risk')
+  if (answers['fomo-reaction']) reviewOrder.push('fomo-reaction')
+  if (answers['income-draw']) reviewOrder.push('income-draw')
   if (answers['investment-style']) reviewOrder.push('investment-style')
   if (answers.themes) reviewOrder.push('themes')
   if (answers['ai-insight-2']) reviewOrder.push('ai-insight-2')

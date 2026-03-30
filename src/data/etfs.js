@@ -24,4 +24,6 @@ export const ETF_DATA = {
   BAI:  { ticker: "BAI",  name: "iShares A.I. Innovation and Tech Active ETF",   category: "AI & Technology Equity",    expenseRatio: 0.55, active: true },
   BLCR: { ticker: "BLCR", name: "BlackRock Large Cap Core ETF",                  category: "Active US Large Cap",       expenseRatio: 0.36, active: true },
   POWR: { ticker: "POWR", name: "iShares U.S. Power Infrastructure ETF",         category: "U.S. Power Infrastructure", expenseRatio: 0.40, active: true },
+  ICLN: { ticker: "ICLN", name: "iShares Global Clean Energy ETF",              category: "Global Clean Energy",       expenseRatio: 0.39 },
+  IDEF: { ticker: "IDEF", name: "iShares Defense Industrials Active ETF",       category: "Defense & Aerospace",       expenseRatio: 0.35, active: true },
 }
