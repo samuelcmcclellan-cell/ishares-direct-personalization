@@ -14,16 +14,17 @@ export const PROBLEM = {
     heading: "The Gap",
     points: [
       "Self-directed investors want personalized guidance but don't want to pay for an advisor",
-      "Existing tools offer product screeners, not portfolio construction",
+      "Existing tools offer product screeners, not customized portfolio construction",
       "Competitors are racing to own the personalization layer — Schwab Intelligent Portfolios, Vanguard Digital Advisor, Wealthfront",
-      "iShares is the world's leading ETF brand but stops at the product level",
+      "iShares is the world's leading ETF brand but stops at the product level for Direct investors",
+      "The existing portfolio tickers (AO, AOR, etc) don't have the thematic/active exposures where we are increasingly seeing direct interest",
     ],
   },
   opportunity: {
     heading: "The iShares Advantage",
     points: [
       "Broadest ETF lineup in the industry — index, active, factor, thematic",
-      "BlackRock Investment Institute capital market assumptions for portfolio construction",
+      "Access to BlackRock thought leadership and portfolio management teams",
       "Existing model portfolio infrastructure and advisor relationships",
       "Trusted brand with $3.9T+ in US AUM and institutional credibility",
     ],
