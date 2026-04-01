@@ -199,23 +199,10 @@ m1Items.forEach((item, i) => {
     { text: "•  ", options: { color: C.green } },
     { text: item, options: { color: C.darkGray } },
   ], {
-    x: 0.65, y: 2.88 + i * 0.35, w: 2.53, h: 0.32,
+    x: 0.65, y: 3.04 + i * 0.35, w: 2.53, h: 0.32,
     fontSize: 9, fontFace: "Arial", valign: "top", margin: 0,
   });
 });
-
-// Model 1 footer stats
-s2.addText([
-  { text: "4–6 wks", options: { bold: true, color: C.black } },
-  { text: "  ·  ", options: { color: C.medGray } },
-  { text: "$", options: { bold: true, color: C.green } },
-  { text: "  ·  ", options: { color: C.medGray } },
-  { text: "No AI", options: { color: C.medGray } },
-], {
-  x: 0.65, y: 4.3, w: 2.53, h: 0.25,
-  fontSize: 9, fontFace: "Arial", margin: 0,
-});
-
 
 // Model 2 card
 s2.addShape(pres.shapes.ROUNDED_RECTANGLE, {
@@ -248,22 +235,10 @@ m2Items.forEach((item, i) => {
     { text: "•  ", options: { color: C.orange } },
     { text: item, options: { color: C.darkGray } },
   ], {
-    x: 3.73, y: 2.88 + i * 0.35, w: 2.53, h: 0.32,
+    x: 3.73, y: 3.04 + i * 0.35, w: 2.53, h: 0.32,
     fontSize: 9, fontFace: "Arial", valign: "top", margin: 0,
   });
 });
-
-s2.addText([
-  { text: "3–6 mos", options: { bold: true, color: C.black } },
-  { text: "  ·  ", options: { color: C.medGray } },
-  { text: "$$$", options: { bold: true, color: C.orange } },
-  { text: "  ·  ", options: { color: C.medGray } },
-  { text: "High AI", options: { color: C.medGray } },
-], {
-  x: 3.73, y: 4.3, w: 2.53, h: 0.25,
-  fontSize: 9, fontFace: "Arial", margin: 0,
-});
-
 
 // Model 3 card
 s2.addShape(pres.shapes.ROUNDED_RECTANGLE, {
@@ -296,20 +271,9 @@ m3Items.forEach((item, i) => {
     { text: "•  ", options: { color: C.gold } },
     { text: item, options: { color: C.darkGray } },
   ], {
-    x: 6.82, y: 2.88 + i * 0.35, w: 2.53, h: 0.32,
+    x: 6.82, y: 3.04 + i * 0.35, w: 2.53, h: 0.32,
     fontSize: 9, fontFace: "Arial", valign: "top", margin: 0,
   });
-});
-
-s2.addText([
-  { text: "6–12 mos", options: { bold: true, color: C.black } },
-  { text: "  ·  ", options: { color: C.medGray } },
-  { text: "$$$$", options: { bold: true, color: C.gold } },
-  { text: "  ·  ", options: { color: C.medGray } },
-  { text: "Very High AI", options: { color: C.medGray } },
-], {
-  x: 6.82, y: 4.3, w: 2.53, h: 0.25,
-  fontSize: 9, fontFace: "Arial", margin: 0,
 });
 
 addFooter(s2, "2");
