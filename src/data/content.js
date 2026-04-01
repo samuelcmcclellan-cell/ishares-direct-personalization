@@ -13,7 +13,7 @@ export const PROBLEM = {
   problem: {
     heading: "The Gap",
     points: [
-      "Self-directed investors want personalized guidance but don't want to pay for an advisor",
+      "Self-directed investors want personalized guidance but don't meet minimum asset requirements or don't require the additional services offered by a financial advisor",
       "Existing tools offer product screeners, not customized portfolio construction",
       "Competitors are racing to own the personalization layer — Schwab Intelligent Portfolios, Vanguard Digital Advisor, Wealthfront",
       "iShares is the world's leading ETF brand but stops at the product level for Direct investors",

@@ -103,7 +103,7 @@ s1.addShape(pres.shapes.LINE, {
 
 // Three clean thesis points — generous spacing, no bullet clutter
 const points = [
-  "75M+ self-directed investors want guidance but won't pay for an advisor — they need a product-embedded solution.",
+  "75M+ self-directed investors want guidance but don't meet advisor minimums or need advisor-level services — they need a product-embedded solution.",
   "Schwab, Vanguard, and Wealthfront are racing to own the personalization layer. iShares isn't in the race yet.",
   "The path forward: start with simple allocation models, then layer in AI-driven personalization over time.",
 ];
