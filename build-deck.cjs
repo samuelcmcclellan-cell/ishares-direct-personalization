@@ -199,7 +199,7 @@ m1Items.forEach((item, i) => {
     { text: "•  ", options: { color: C.green } },
     { text: item, options: { color: C.darkGray } },
   ], {
-    x: 0.65, y: 3.04 + i * 0.35, w: 2.53, h: 0.32,
+    x: 0.65, y: 3.20 + i * 0.35, w: 2.53, h: 0.32,
     fontSize: 9, fontFace: "Arial", valign: "top", margin: 0,
   });
 });
