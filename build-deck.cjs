@@ -132,22 +132,6 @@ s2.addShape(pres.shapes.RECTANGLE, {
 addHeadline(s2, "Three Ways to Build This");
 addSubhead(s2, "A spectrum from fast-to-market simplicity to full AI-powered portfolio intelligence. Start anywhere, evolve over time.");
 
-// Arrow / progression line
-s2.addShape(pres.shapes.LINE, {
-  x: 0.8, y: 1.58, w: 8.4, h: 0,
-  line: { color: C.lightGray, width: 2 },
-});
-
-// Three dots on the line
-const dotColors = [C.green, C.orange, C.gold];
-const dotX = [1.5, 4.85, 8.2];
-dotX.forEach((x, i) => {
-  s2.addShape(pres.shapes.OVAL, {
-    x: x - 0.12, y: 1.46, w: 0.24, h: 0.24,
-    fill: { color: dotColors[i] },
-  });
-});
-
 // Column positions
 const cols = [
   { x: 0.5,  w: 2.83, color: C.green,  label: "MODEL 1" },
