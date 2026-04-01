@@ -196,7 +196,6 @@ const m1Items = [
 ];
 m1Items.forEach((item, i) => {
   s2.addText([
-    { text: "•  ", options: { color: C.green } },
     { text: item, options: { color: C.darkGray } },
   ], {
     x: 0.65, y: 3.20 + i * 0.35, w: 2.53, h: 0.32,
@@ -232,7 +231,6 @@ const m2Items = [
 ];
 m2Items.forEach((item, i) => {
   s2.addText([
-    { text: "•  ", options: { color: C.orange } },
     { text: item, options: { color: C.darkGray } },
   ], {
     x: 3.73, y: 3.04 + i * 0.35, w: 2.53, h: 0.32,
@@ -268,7 +266,6 @@ const m3Items = [
 ];
 m3Items.forEach((item, i) => {
   s2.addText([
-    { text: "•  ", options: { color: C.gold } },
     { text: item, options: { color: C.darkGray } },
   ], {
     x: 6.82, y: 3.04 + i * 0.35, w: 2.53, h: 0.32,
