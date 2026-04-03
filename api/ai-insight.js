@@ -466,24 +466,30 @@ ${userProfile}
 NOTABLE OBSERVATIONS ABOUT THIS PERSON (build your scenario around one of these):
 ${observationsBlock}
 
-YOUR TASK: Construct a realistic, personalized financial scenario using this investor's ACTUAL numbers, then ask them to walk through what they'd think and do.
+YOUR TASK: Construct a realistic behavioral scenario that tests this investor's true risk posture, then ask how they'd respond.
 
 SCENARIO REQUIREMENTS:
-1. Use their real numbers to make the scenario feel personal: savings ($${(answers['financial-picture']?.currentSavings || 0).toLocaleString()}), income ($${(answers['financial-picture']?.annualIncome || 0).toLocaleString()}), age (${answers['financial-picture']?.currentAge || 'unknown'}), goal (${answers.goal?.label || 'unspecified'}).
+1. Reference their goal, life stage, and behavioral tensions — NOT specific dollar amounts, savings figures, or income numbers. Speak to their situation without quoting their numbers back at them.
 2. Create tension with their stated risk behavior — they said they'd "${answers.risk?.label || 'unknown'}" during a 20% drop.
-3. Do NOT repeat the 20% drop scenario. Use a different angle: prolonged bear market, sector crash, life event + market event, or social pressure.
-4. MAXIMUM 40 WORDS for the full scenario + question. Two sentences max: one for the setup, one for the question.
+3. Do NOT repeat the 20% drop scenario. Use a different angle: prolonged bear market, life event + market event, social pressure, or opportunity cost.
+4. MAXIMUM 35 WORDS for the full scenario + question. Two sentences max: one for the setup, one for the question.
 5. No preamble. Jump straight in. The scenario IS the question.
 6. If a HIGH-severity observation exists above, your scenario MUST target it.
+7. NEVER cite specific dollar amounts (no "$500K", "$380K", etc.). Use relative language like "a significant chunk", "most of your savings", "your portfolio".
 
-GOOD example: "Six months in, your $500K is now $380K and still falling. Your partner wants you to sell everything. What do you tell them — and do you mean it?"
+GOOD examples:
+- "Your portfolio is down 25% and still falling. Your partner wants to sell everything. What do you tell them?"
+- "A friend's risky bet just paid off big. Your steady approach looks boring by comparison. Does that bother you?"
+- "Markets are crashing but your timeline is long. A colleague panics and sells. Do you follow or hold?"
 
-BAD example: "Imagine that over the course of the next 12 months, your portfolio which currently sits at $500,000 experiences a prolonged downturn..."
+BAD examples (too number-heavy):
+- "Six months in, your $500K is now $380K..."
+- "Your $200K portfolio drops to $140K..."
 
-RESPONSE FORMAT: Return a JSON object with "question" (string, max 40 words) and "options" (array of exactly 4 short answer strings, each max 15 words). Options should range from most anxious/conservative to most confident/aggressive, revealing different behavioral types. Each option should feel like a real person's honest answer.
+RESPONSE FORMAT: Return a JSON object with "question" (string, max 35 words) and "options" (array of exactly 4 short answer strings, each max 15 words). Options should range from most anxious/conservative to most confident/aggressive, revealing different behavioral types. Each option should feel like a real person's honest answer.
 
 Example:
-{"question":"Six months in, your $500K is now $380K. Your partner wants out. What do you tell them?","options":["They're right — let's sell before it gets worse","Let's wait a month and see what happens","We stick to the plan — this is temporary","I want to buy more while it's cheap"]}
+{"question":"Your portfolio is down 25% and still falling. Your partner wants to sell everything. What do you tell them?","options":["They're right — let's get out before it gets worse","Let's wait a month and reassess","We stick to the plan — this is temporary","I actually want to invest more while it's cheap"]}
 
 Return ONLY valid JSON.
 ${guardrails}`
@@ -503,22 +509,27 @@ Category: ${angle.category.label} — ${angle.category.desc}
 Technique: ${angle.technique.label} — ${angle.technique.desc}
 
 HARD REQUIREMENTS — your question will be rejected if any of these fail:
-1. MAXIMUM 30 WORDS. No exceptions. Count them. If it's over 30 words, cut it down.
-2. The question MUST feel personalized — reference their actual profile details (numbers, goal, risk level, etc.) so it couldn't be asked to just anyone.
+1. MAXIMUM 25 WORDS. No exceptions. Count them. If it's over 25 words, cut it down.
+2. The question MUST feel personalized — reference their goal, life stage, risk stance, or behavioral tensions. But do NOT quote specific dollar amounts, savings figures, or income numbers back at them.
 3. The question must NOT be answerable by someone who hasn't provided this profile.
 4. No preamble. No "I noticed...", no "Based on your profile...", no "Given that you...". Start with the punch.
 5. Never start with a subordinate clause ("If you had...", "Considering that...", "With your..."). Lead with the question or the scenario.
 6. Use the Technique above to frame the question, but keep it tight.
+7. NEVER cite specific dollar amounts. Use relative terms like "significant savings", "early in your career", "aggressive stance", "your retirement goal".
 
-GOOD examples (notice: short, specific, direct):
-- "You've saved $500K but picked maximum growth. What's the worst outcome you've actually pictured?"
-- "At 28 with $30K saved, what's making you play it so safe?"
+GOOD examples (notice: short, behavioral, no dollar amounts):
+- "You picked maximum growth but you're just getting started. What's the worst outcome you've pictured?"
+- "You're young with decades ahead but playing it very safe. What's driving that?"
 - "Would you rather miss a 20% rally or sit through a 20% crash?"
+
+BAD examples (too anchored in specific numbers):
+- "You've saved $500K but picked maximum growth..."
+- "At 28 with $30K saved, what's making you play it so safe?"
 
 RESPONSE FORMAT: Return a JSON object with "question" (string, max 25 words) and "options" (array of exactly 4 short answer strings, each max 15 words). Options should range across a behavioral spectrum — from anxious/conservative to confident/aggressive, or from emotional to analytical. Each option should feel like a real person's honest answer, not a textbook response.
 
 Example:
-{"question":"You've saved $500K but picked maximum growth. What's the worst outcome you've pictured?","options":["Losing half and not being able to recover in time","A rough year, but I'd ride it out","I haven't really thought about the downside","I'd see a crash as a chance to buy more"]}
+{"question":"You picked maximum growth but you're just getting started. What's the worst outcome you've pictured?","options":["Losing most of it and not recovering in time","A rough year, but I'd ride it out","I haven't really thought about the downside","A crash would be a chance to buy more"]}
 
 Return ONLY valid JSON.
 ${guardrails}`
@@ -536,18 +547,23 @@ Category: ${angle.category.label} — ${angle.category.desc}
 Technique: ${angle.technique.label} — ${angle.technique.desc}
 
 HARD REQUIREMENTS — your question will be rejected if any of these fail:
-1. MAXIMUM 30 WORDS. No exceptions. Count them.
-2. The question MUST feel personalized — reference their actual profile details so it couldn't be asked to just anyone.
+1. MAXIMUM 25 WORDS. No exceptions. Count them.
+2. The question MUST feel personalized — reference their goal, risk stance, or behavioral tensions. But do NOT quote specific dollar amounts, savings figures, or income numbers.
 3. The question must NOT be answerable by a generic person.
 4. Do NOT repeat the emotional territory of the earlier behavioral question (shown above). Find a NEW angle.
 5. If a HIGH-severity observation exists above, name the tension directly. Don't dance around it.
 6. No preamble. No subordinate clause openers ("If you...", "Given that...", "Considering..."). Start with the punch.
 7. Use the Technique above to frame the question, but brevity wins over technique fidelity.
+8. NEVER cite specific dollar amounts. Use behavioral language instead.
 
 GOOD examples:
 - "You want wealth-building but said you'd sell in a crash. Which instinct wins?"
-- "Your savings rate is 25% but your balance is only $18K. What happened?"
+- "You're saving aggressively but your balance is still small. What's the story there?"
 - "If your portfolio gets one thing right and one thing wrong, what matters most?"
+
+BAD examples (too number-anchored):
+- "Your savings rate is 25% but your balance is only $18K..."
+- "You earn $150K but only saved $30K..."
 
 RESPONSE FORMAT: Return a JSON object with "question" (string, max 25 words) and "options" (array of exactly 4 short answer strings, each max 15 words). Options should reveal different investor psychologies — from protective to aggressive, emotional to analytical. Each should feel like a genuine human response.
 
