@@ -91,11 +91,11 @@ const AGE_FROM_FOLLOWUP = {
 
 const SMART_DEFAULTS = {
   retirement: {
-    'under-30': { currentSavings: 15000,  savingsRate: 7,  annualIncome: 65000 },
-    '30-39':    { currentSavings: 80000,  savingsRate: 8,  annualIncome: 110000 },
-    '40-49':    { currentSavings: 200000, savingsRate: 9,  annualIncome: 140000 },
-    '50-59':    { currentSavings: 400000, savingsRate: 12, annualIncome: 150000 },
-    '60-plus':  { currentSavings: 600000, savingsRate: 12, annualIncome: 100000 },
+    'under-30': { currentSavings: 50000,  savingsRate: 10, annualIncome: 120000 },
+    '30-39':    { currentSavings: 150000, savingsRate: 12, annualIncome: 200000 },
+    '40-49':    { currentSavings: 300000, savingsRate: 12, annualIncome: 250000 },
+    '50-59':    { currentSavings: 500000, savingsRate: 14, annualIncome: 250000 },
+    '60-plus':  { currentSavings: 700000, savingsRate: 12, annualIncome: 200000 },
   },
   education: {
     _default: { currentSavings: 25000, savingsRate: 6, annualIncome: 100000 },

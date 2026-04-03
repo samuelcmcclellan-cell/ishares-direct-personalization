@@ -202,6 +202,22 @@ export function PrototypeSection() {
               onPhaseClick={q.goToStep}
             />
 
+            {/* Review step: show Get My Portfolio button at top */}
+            {isReviewStep && (
+              <div className="flex justify-between mb-6 pb-6 border-b border-[#E5E5DD]">
+                {showBackButton ? (
+                  <Button variant="ghost" onClick={q.goBack}>
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Back
+                  </Button>
+                ) : <div />}
+                <Button onClick={q.submit}>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Get My Portfolio
+                </Button>
+              </div>
+            )}
+
             <motion.div
               key={q.currentStepData?.id + '-' + q.currentStep}
               initial={{ opacity: 0 }}
@@ -217,8 +233,8 @@ export function PrototypeSection() {
               />
             </motion.div>
 
-            {/* Navigation — only show when needed */}
-            {(showBackButton || showNextButton || isReviewStep) && !isDeepDivePrompt && (
+            {/* Navigation — only show for non-review steps */}
+            {(showBackButton || showNextButton) && !isReviewStep && !isDeepDivePrompt && (
               <div className="flex justify-between mt-10 pt-6 border-t border-[#E5E5DD]">
                 {showBackButton ? (
                   <Button
@@ -230,12 +246,7 @@ export function PrototypeSection() {
                   </Button>
                 ) : <div />}
 
-                {isReviewStep ? (
-                  <Button onClick={q.submit}>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Get My Portfolio
-                  </Button>
-                ) : showNextButton ? (
+                {showNextButton ? (
                   <Button onClick={q.goNext} disabled={!canGoNext()}>
                     Continue
                   </Button>

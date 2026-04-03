@@ -20,11 +20,11 @@ export const STEPS = [
     description: "Where do you fall on the spectrum?",
     type: "single-select",
     options: [
-      { id: "1", label: "1 — Preserve",    riskNudge: -2, description: "Protect what I have" },
-      { id: "2", label: "2 — Conservative", riskNudge: -1, description: "Stability first" },
-      { id: "3", label: "3 — Balanced",     riskNudge: 0,  description: "Equal priority" },
-      { id: "4", label: "4 — Growth",       riskNudge: 1,  description: "Lean into growth" },
-      { id: "5", label: "5 — Max Growth",   riskNudge: 2,  description: "Maximize returns" },
+      { id: "1", label: "1 — Preserve",    riskNudge: -2, icon: "Shield",      description: "Protect what I have" },
+      { id: "2", label: "2 — Conservative", riskNudge: -1, icon: "ShieldCheck", description: "Stability first" },
+      { id: "3", label: "3 — Balanced",     riskNudge: 0,  icon: "Scale",       description: "Equal priority" },
+      { id: "4", label: "4 — Growth",       riskNudge: 1,  icon: "TrendingUp",  description: "Lean into growth" },
+      { id: "5", label: "5 — Max Growth",   riskNudge: 2,  icon: "Rocket",      description: "Maximize returns" },
     ],
   },
   {
