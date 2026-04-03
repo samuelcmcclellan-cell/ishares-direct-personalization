@@ -8,8 +8,8 @@ export function ProblemStatement() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-[#F5F5EB] border border-[#E5E5DD] rounded-2xl p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-lg bg-[#D92B2B]/10 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-[#D92B2B]" />
+            <div className="w-14 h-14 rounded-lg bg-[#D92B2B]/10 flex items-center justify-center">
+              <AlertTriangle className="w-7 h-7 text-[#D92B2B]" />
             </div>
             <h3 className="text-xl font-semibold">{PROBLEM.problem.heading}</h3>
           </div>
@@ -25,8 +25,8 @@ export function ProblemStatement() {
 
         <div className="bg-[#F5F5EB] border border-[#E5E5DD] rounded-2xl p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-lg bg-[#FEDC00]/30 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-black" />
+            <div className="w-14 h-14 rounded-lg bg-[#FEDC00]/30 flex items-center justify-center">
+              <Zap className="w-7 h-7 text-black" />
             </div>
             <h3 className="text-xl font-semibold">{PROBLEM.opportunity.heading}</h3>
           </div>

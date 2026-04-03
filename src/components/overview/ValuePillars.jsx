@@ -18,8 +18,8 @@ export function ValuePillars() {
               key={i}
               className="bg-white border border-[#E5E5DD] rounded-2xl p-6 hover:shadow-[0_0_12px_rgba(0,0,0,0.08)] hover:border-[#B9B9AF] transition-all duration-200"
             >
-              <div className="w-12 h-12 rounded-lg bg-[#FEDC00]/30 flex items-center justify-center mb-4">
-                <Icon className="w-6 h-6 text-black" />
+              <div className="w-16 h-16 rounded-lg bg-[#FEDC00]/30 flex items-center justify-center mb-4">
+                <Icon className="w-8 h-8 text-black" />
               </div>
               <h3 className="text-base font-semibold mb-2">{pillar.title}</h3>
               <p className="text-sm text-[#4A4A4A] leading-relaxed">{pillar.description}</p>

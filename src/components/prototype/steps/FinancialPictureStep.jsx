@@ -1,14 +1,23 @@
 import { useState, useMemo, useEffect } from 'react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { Calendar, Sunset, PiggyBank, TrendingUp, DollarSign } from 'lucide-react'
 import { MarketInsight } from '../MarketInsight'
 import { EDUCATIONAL_INSIGHTS } from '../../../data/educationalInsights'
 
+const SLIDER_ICONS = {
+  currentAge: Calendar,
+  retirementAge: Sunset,
+  currentSavings: PiggyBank,
+  savingsRate: TrendingUp,
+  annualIncome: DollarSign,
+}
+
 const SLIDERS = [
   { key: 'currentAge',     label: 'Current Age',     min: 18, max: 75,      step: 1,    format: v => `${v} years`,     defaultValue: 35 },
-  { key: 'retirementAge',  label: 'Retirement Age',  min: 50, max: 80,      step: 1,    format: v => `${v} years`,     defaultValue: 65 },
-  { key: 'currentSavings', label: 'Current Savings',  min: 0,  max: 2000000, step: 5000, format: v => formatDollar(v),  defaultValue: 50000 },
+  { key: 'retirementAge',  label: 'Retirement Age',  min: 50, max: 80,      step: 1,    format: v => `${v} years`,     defaultValue: 70 },
+  { key: 'currentSavings', label: 'Current Savings',  min: 0,  max: 2000000, step: 5000, format: v => formatDollar(v),  defaultValue: 100000 },
   { key: 'savingsRate',    label: 'Savings Rate',     min: 0,  max: 30,      step: 1,    format: v => `${v}%`,          defaultValue: 10 },
-  { key: 'annualIncome',   label: 'Annual Income',    min: 0,  max: 500000,  step: 5000, format: v => formatDollar(v),  defaultValue: 100000 },
+  { key: 'annualIncome',   label: 'Annual Income',    min: 0,  max: 500000,  step: 5000, format: v => formatDollar(v),  defaultValue: 200000 },
 ]
 
 function formatDollar(v) {
@@ -115,10 +124,10 @@ function getSmartDefaults(goal, goalFollowup) {
 
   const base = {
     currentAge: inferredAge,
-    retirementAge: Math.max(inferredAge + 5, 65),
-    currentSavings: 50000,
+    retirementAge: Math.max(inferredAge + 5, 70),
+    currentSavings: 100000,
     savingsRate: 10,
-    annualIncome: 100000,
+    annualIncome: 200000,
   }
 
   if (!goalId || !SMART_DEFAULTS[goalId]) return base
@@ -188,7 +197,10 @@ export function FinancialPictureStep({ step, answer, onSelect, goal, goalFollowu
           {SLIDERS.map(slider => (
             <div key={slider.key}>
               <div className="flex justify-between mb-1.5">
-                <span className="text-sm text-[#4A4A4A]">{slider.label}</span>
+                <span className="text-sm text-[#4A4A4A] flex items-center gap-1.5">
+                  {(() => { const SliderIcon = SLIDER_ICONS[slider.key]; return SliderIcon ? <SliderIcon className="w-4 h-4 text-[#7A7A7A]" /> : null })()}
+                  {slider.label}
+                </span>
                 <span className="text-sm font-semibold">{slider.format(values[slider.key])}</span>
               </div>
               <div className="relative">

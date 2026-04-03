@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, RotateCcw, Target, Clock, Shield, TrendingUp, Receipt, Globe, DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle, Brain, Eye } from 'lucide-react'
 import { PortfolioPieChart } from './PortfolioPieChart'
 import { HoldingsTable } from './HoldingsTable'
+import { RiskRadarChart } from './RiskRadarChart'
 import { Button } from '../shared/Button'
 
 const RISK_COLORS = {
@@ -40,7 +41,7 @@ const ICON_MAP = {
   DollarSign, BarChart3, Zap, Sparkles, SlidersHorizontal, AlertCircle, Brain, Eye,
 }
 
-export function ResultsView({ portfolio, riskScore, explanations, profileNarrative, onReset }) {
+export function ResultsView({ portfolio, riskScore, explanations, profileNarrative, onReset, answers }) {
   if (!portfolio) return null
 
   return (
@@ -103,14 +104,20 @@ export function ResultsView({ portfolio, riskScore, explanations, profileNarrati
               const IconComponent = ICON_MAP[item.icon] || Target
               return (
                 <div key={i} className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-white border border-[#E5E5DD] flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <IconComponent className="w-3.5 h-3.5 text-[#4A4A4A]" />
+                  <div className="w-10 h-10 rounded-lg bg-white border border-[#E5E5DD] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <IconComponent className="w-5 h-5 text-[#4A4A4A]" />
                   </div>
                   <p className="text-sm text-[#4A4A4A] leading-relaxed">{item.text}</p>
                 </div>
               )
             })}
           </div>
+        </div>
+      )}
+
+      {answers && (
+        <div className="bg-[#F5F5EB] border border-[#E5E5DD] rounded-2xl p-6 mb-8">
+          <RiskRadarChart answers={answers} />
         </div>
       )}
 

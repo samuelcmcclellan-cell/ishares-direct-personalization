@@ -22,6 +22,7 @@ export function ModelsSection() {
           <ModelCard
             key={model.id}
             model={model}
+            featured={model.id === 2}
             onClick={() => setSelectedModel(model)}
           />
         ))}

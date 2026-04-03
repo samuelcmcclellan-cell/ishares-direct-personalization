@@ -3,19 +3,28 @@ import { Badge } from '../shared/Badge'
 
 const ICONS = { LayoutGrid, MessageSquare, BrainCircuit }
 
-export function ModelCard({ model, onClick }) {
+export function ModelCard({ model, onClick, featured }) {
   const Icon = ICONS[model.icon]
 
   return (
     <div
       onClick={onClick}
-      className="bg-white border border-[#E5E5DD] rounded-2xl p-6 hover:border-[#B9B9AF] hover:shadow-[0_0_12px_rgba(0,0,0,0.08)] transition-all duration-200 cursor-pointer group"
+      className={`bg-white border rounded-2xl p-6 hover:border-[#B9B9AF] hover:shadow-[0_0_12px_rgba(0,0,0,0.08)] transition-all duration-200 cursor-pointer group ${
+        featured
+          ? 'border-l-4 border-l-[#FEDC00] border-[#E5E5DD] shadow-[0_0_20px_rgba(254,220,0,0.25)] scale-[1.03]'
+          : 'border-[#E5E5DD]'
+      }`}
     >
       <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-lg bg-[#FEDC00]/30 flex items-center justify-center">
-          <Icon className="w-6 h-6 text-black" />
+        <div className={`${featured ? 'w-14 h-14 bg-[#FEDC00]/50' : 'w-14 h-14 bg-[#FEDC00]/30'} rounded-lg flex items-center justify-center`}>
+          <Icon className={`${featured ? 'w-8 h-8' : 'w-7 h-7'} text-black`} />
         </div>
-        <span className="text-xs font-mono text-[#B9B9AF]">Model {model.id}</span>
+        <div className="flex flex-col items-end gap-1">
+          {featured && (
+            <span className="text-[10px] font-bold uppercase tracking-wide text-black bg-[#FEDC00] px-2 py-0.5 rounded-full">Live Demo Below</span>
+          )}
+          <span className="text-xs font-mono text-[#B9B9AF]">Model {model.id}</span>
+        </div>
       </div>
 
       <h3 className="text-lg font-semibold mb-1">{model.name}</h3>

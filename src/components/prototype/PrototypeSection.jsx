@@ -168,11 +168,15 @@ export function PrototypeSection() {
   return (
     <SectionWrapper id="prototype" className="bg-[#F5F5EB] border-t border-[#E5E5DD]">
       <div className="text-center mb-12">
-        <span className="inline-flex items-center gap-2 text-base font-bold uppercase tracking-wide text-black bg-[#FEDC00] px-5 py-2 rounded-full mb-4 shadow-[0_0_16px_rgba(254,220,0,0.4)]">
-          <Sparkles className="w-5 h-5" />
+        <motion.span
+          animate={{ scale: [1, 1.02, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="inline-flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-black bg-[#FEDC00] px-6 py-3 rounded-full mb-4 shadow-[0_0_16px_rgba(254,220,0,0.4)]"
+        >
+          <Sparkles className="w-6 h-6" />
           Interactive Demo — Model 2: AI-Guided Portfolios
-        </span>
-        <h2 className="text-3xl font-bold tracking-tight mb-4">Try It Yourself</h2>
+        </motion.span>
+        <h2 className="text-4xl font-bold tracking-tight mb-4">Try It Yourself</h2>
         <p className="text-[#4A4A4A] max-w-2xl mx-auto">
           Experience how an AI-guided intake adapts questions based on your responses and matches you to a personalized portfolio from a curated library.
         </p>
@@ -186,6 +190,7 @@ export function PrototypeSection() {
             explanations={result.explanations}
             profileNarrative={result.profileNarrative}
             onReset={q.reset}
+            answers={q.answers}
           />
         ) : (
           <>
