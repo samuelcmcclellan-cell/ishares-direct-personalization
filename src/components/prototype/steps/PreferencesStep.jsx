@@ -1,3 +1,6 @@
+import { MarketInsight } from '../MarketInsight'
+import { EDUCATIONAL_INSIGHTS } from '../../../data/educationalInsights'
+
 export function PreferencesStep({ step, answer, onSelect }) {
   const prefs = answer || {}
 
@@ -9,6 +12,9 @@ export function PreferencesStep({ step, answer, onSelect }) {
     <div>
       <h2 className="text-2xl font-bold mb-2">{step.title}</h2>
       <p className="text-[#7A7A7A] mb-8">{step.description}</p>
+      {EDUCATIONAL_INSIGHTS["preferences"] && (
+        <MarketInsight {...EDUCATIONAL_INSIGHTS["preferences"]} />
+      )}
       <div className="flex flex-col gap-4 max-w-lg">
         {step.options.map(option => (
           <div

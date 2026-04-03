@@ -1,4 +1,6 @@
 import { Card } from '../../shared/Card'
+import { MarketInsight } from '../MarketInsight'
+import { EDUCATIONAL_INSIGHTS } from '../../../data/educationalInsights'
 
 const RISK_COLORS = ['text-[#028E53]', 'text-[#028E53]', 'text-[#E6A800]', 'text-[#E87722]', 'text-[#D92B2B]']
 
@@ -7,6 +9,9 @@ export function RiskStep({ step, answer, onSelect }) {
     <div>
       <h2 className="text-2xl font-bold mb-2">{step.title}</h2>
       <p className="text-[#7A7A7A] mb-8">{step.description}</p>
+      {EDUCATIONAL_INSIGHTS["risk"] && (
+        <MarketInsight {...EDUCATIONAL_INSIGHTS["risk"]} />
+      )}
       <div className="flex flex-col gap-3 max-w-xl">
         {step.options.map((option, i) => (
           <Card

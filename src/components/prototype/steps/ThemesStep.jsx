@@ -1,4 +1,6 @@
 import { Brain, Zap, Building2, Shield, MinusCircle } from 'lucide-react'
+import { MarketInsight } from '../MarketInsight'
+import { EDUCATIONAL_INSIGHTS } from '../../../data/educationalInsights'
 
 const ICONS = { Brain, Zap, Factory: Building2, Shield, MinusCircle }
 
@@ -25,6 +27,9 @@ export function ThemesStep({ step, answer, onSelect }) {
     <div>
       <h2 className="text-2xl font-bold mb-2">{step.title}</h2>
       <p className="text-[#7A7A7A] mb-6">{step.description}</p>
+      {EDUCATIONAL_INSIGHTS["themes"] && (
+        <MarketInsight {...EDUCATIONAL_INSIGHTS["themes"]} />
+      )}
       <div className="flex flex-col gap-3">
         {step.options.map(option => {
           const Icon = ICONS[option.icon]

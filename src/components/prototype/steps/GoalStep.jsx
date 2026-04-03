@@ -1,5 +1,7 @@
 import { Sunset, GraduationCap, Home, TrendingUp, DollarSign, Shield } from 'lucide-react'
 import { Card } from '../../shared/Card'
+import { MarketInsight } from '../MarketInsight'
+import { EDUCATIONAL_INSIGHTS } from '../../../data/educationalInsights'
 
 const ICONS = { Sunset, GraduationCap, Home, TrendingUp, DollarSign, Shield }
 
@@ -8,6 +10,9 @@ export function GoalStep({ step, answer, onSelect }) {
     <div>
       <h2 className="text-2xl font-bold mb-2">{step.title}</h2>
       <p className="text-[#7A7A7A] mb-8">{step.description}</p>
+      {EDUCATIONAL_INSIGHTS["goal"] && (
+        <MarketInsight {...EDUCATIONAL_INSIGHTS["goal"]} />
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {step.options.map(option => {
           const Icon = ICONS[option.icon]

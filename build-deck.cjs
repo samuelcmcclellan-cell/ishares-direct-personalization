@@ -209,7 +209,7 @@ s2.addText("Intelligent matching, curated output", {
 
 const m2Items = [
   "12-step adaptive intake + 3 AI open-text insights",
-  "8 risk-scored portfolios from 27 iShares ETFs",
+  "33 model portfolios from 23 iShares ETFs",
   "Multi-factor scoring from 6+ behavioral signals",
   "Theme overlays: AI, Clean, Infra, Defense",
 ];

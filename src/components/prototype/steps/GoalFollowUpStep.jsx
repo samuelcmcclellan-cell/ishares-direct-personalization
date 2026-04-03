@@ -1,10 +1,15 @@
 import { Card } from '../../shared/Card'
+import { MarketInsight } from '../MarketInsight'
+import { EDUCATIONAL_INSIGHTS } from '../../../data/educationalInsights'
 
 export function GoalFollowUpStep({ step, answer, onSelect }) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-2">{step.title}</h2>
       <p className="text-[#7A7A7A] mb-8">{step.description}</p>
+      {EDUCATIONAL_INSIGHTS[step.id] && (
+        <MarketInsight {...EDUCATIONAL_INSIGHTS[step.id]} />
+      )}
       <div className="flex flex-col gap-3 max-w-lg">
         {step.options.map(option => (
           <Card

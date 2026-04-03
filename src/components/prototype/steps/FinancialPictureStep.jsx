@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { MarketInsight } from '../MarketInsight'
+import { EDUCATIONAL_INSIGHTS } from '../../../data/educationalInsights'
 
 const SLIDERS = [
   { key: 'currentAge',     label: 'Current Age',     min: 18, max: 75,      step: 1,    format: v => `${v} years`,     defaultValue: 35 },
@@ -176,6 +178,9 @@ export function FinancialPictureStep({ step, answer, onSelect, goal, goalFollowu
     <div>
       <h2 className="text-2xl font-bold mb-2">{step.title}</h2>
       <p className="text-[#7A7A7A] mb-6">{step.description}</p>
+      {EDUCATIONAL_INSIGHTS["financial-picture"] && (
+        <MarketInsight {...EDUCATIONAL_INSIGHTS["financial-picture"]} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Sliders */}
