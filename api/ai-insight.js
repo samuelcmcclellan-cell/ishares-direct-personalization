@@ -1,7 +1,31 @@
 const FALLBACK_QUESTIONS = {
-  first: "What's the one money decision that still keeps you up at night — or the one you're most proud of?",
-  second: "If your portfolio could only get one thing absolutely right, what would it be?",
-  third: "Your portfolio drops 15% while the overall market is flat. A colleague just moved to cash and feels great about it. What do you actually do?",
+  first: {
+    question: "What's the one money decision that still keeps you up at night — or the one you're most proud of?",
+    options: [
+      "A past loss that still stings — I replay what I should have done differently",
+      "A smart move I made early — it gave me confidence to keep going",
+      "I haven't made any big money decisions yet — that's part of why I'm here",
+      "I try not to dwell on past decisions — I'd rather focus on what's next"
+    ]
+  },
+  second: {
+    question: "If your portfolio could only get one thing absolutely right, what would it be?",
+    options: [
+      "Protect what I have — I can't afford to lose it",
+      "Grow aggressively — I have time to recover from setbacks",
+      "Generate steady income I can count on",
+      "Stay balanced — I want growth without losing sleep"
+    ]
+  },
+  third: {
+    question: "Your portfolio drops 15% while the overall market is flat. A colleague just moved to cash and feels great about it. What do you actually do?",
+    options: [
+      "Follow their lead — cash sounds safe right now",
+      "Hold steady but check my account daily until it recovers",
+      "Ignore the noise — I trust my plan and don't look",
+      "See it as a buying opportunity and add more"
+    ]
+  },
 }
 
 const NEUTRAL_ANALYSIS = {
@@ -454,9 +478,14 @@ SCENARIO REQUIREMENTS:
 
 GOOD example: "Six months in, your $500K is now $380K and still falling. Your partner wants you to sell everything. What do you tell them — and do you mean it?"
 
-BAD example: "Imagine that over the course of the next 12 months, your portfolio which currently sits at $500,000 experiences a prolonged downturn due to macroeconomic headwinds, falling approximately 25% to around $375,000, while simultaneously your colleague at work mentions that they moved their entire portfolio to cash three months ago and are feeling very confident about that decision. Walk me through what would go through your mind in that situation and what concrete steps you would consider taking."
+BAD example: "Imagine that over the course of the next 12 months, your portfolio which currently sits at $500,000 experiences a prolonged downturn..."
 
-Return ONLY the question text.
+RESPONSE FORMAT: Return a JSON object with "question" (string, max 40 words) and "options" (array of exactly 4 short answer strings, each max 15 words). Options should range from most anxious/conservative to most confident/aggressive, revealing different behavioral types. Each option should feel like a real person's honest answer.
+
+Example:
+{"question":"Six months in, your $500K is now $380K. Your partner wants out. What do you tell them?","options":["They're right — let's sell before it gets worse","Let's wait a month and see what happens","We stick to the plan — this is temporary","I want to buy more while it's cheap"]}
+
+Return ONLY valid JSON.
 ${guardrails}`
     }
 
@@ -483,16 +512,15 @@ HARD REQUIREMENTS — your question will be rejected if any of these fail:
 
 GOOD examples (notice: short, specific, direct):
 - "You've saved $500K but picked maximum growth. What's the worst outcome you've actually pictured?"
-- "Your $200K drops to $140K in 6 months. What's your first call — hold, sell, or buy more?"
 - "At 28 with $30K saved, what's making you play it so safe?"
-- "Would you rather miss a 20% rally or sit through a 20% crash? Which one stings more?"
+- "Would you rather miss a 20% rally or sit through a 20% crash?"
 
-BAD examples (too long, too much setup, meandering):
-- "If you had begun your investment journey 5 years ago with your current savings of $500K and a strong focus on growth, how would your perspective on risk and volatility have evolved?"
-- "Given that you're currently 35 years old with $200,000 in savings and a preference for aggressive growth, how would you describe your emotional reaction if your portfolio experienced a significant downturn?"
-- "Thinking about your current financial situation where you earn $150K annually and have saved $80K, what would you say is the primary factor that influences your approach to investment risk?"
+RESPONSE FORMAT: Return a JSON object with "question" (string, max 25 words) and "options" (array of exactly 4 short answer strings, each max 15 words). Options should range across a behavioral spectrum — from anxious/conservative to confident/aggressive, or from emotional to analytical. Each option should feel like a real person's honest answer, not a textbook response.
 
-Return ONLY the question text.
+Example:
+{"question":"You've saved $500K but picked maximum growth. What's the worst outcome you've pictured?","options":["Losing half and not being able to recover in time","A rough year, but I'd ride it out","I haven't really thought about the downside","I'd see a crash as a chance to buy more"]}
+
+Return ONLY valid JSON.
 ${guardrails}`
     } else {
       return `You are an intake assistant for a portfolio recommendation tool at BlackRock's iShares Direct Personalization platform. You are conducting the final stage of an intelligent investor profile assessment. You are a sharp financial advisor doing a final gut-check before building their portfolio.
@@ -517,14 +545,16 @@ HARD REQUIREMENTS — your question will be rejected if any of these fail:
 7. Use the Technique above to frame the question, but brevity wins over technique fidelity.
 
 GOOD examples:
-- "You want wealth-building but said you'd sell in a crash. Which instinct wins when it's real money?"
+- "You want wealth-building but said you'd sell in a crash. Which instinct wins?"
 - "Your savings rate is 25% but your balance is only $18K. What happened?"
 - "If your portfolio gets one thing right and one thing wrong, what matters most?"
 
-BAD examples:
-- "Looking at the totality of your financial profile including your goal of wealth building, your conservative risk tolerance, and your 20-year timeline, what would you say is the single most important outcome..."
+RESPONSE FORMAT: Return a JSON object with "question" (string, max 25 words) and "options" (array of exactly 4 short answer strings, each max 15 words). Options should reveal different investor psychologies — from protective to aggressive, emotional to analytical. Each should feel like a genuine human response.
 
-Return ONLY the question text.
+Example:
+{"question":"You want wealth-building but said you'd sell in a crash. Which instinct wins?","options":["Safety — I'd rather miss gains than lose what I have","Depends on how bad it gets — I have a limit","Growth — I'd force myself to stay the course","I'd actually buy more if I believed in the plan"]}
+
+Return ONLY valid JSON.
 ${guardrails}`
     }
   }
@@ -716,7 +746,7 @@ export default async function handler(req, res) {
       console.error('OpenAI API error:', response.status, errorData)
 
       if (action === 'generate-question') {
-        return res.status(200).json({ question: FALLBACK_QUESTIONS[step], fallback: true })
+        return res.status(200).json({ question: FALLBACK_QUESTIONS[step]?.question || FALLBACK_QUESTIONS[step], options: FALLBACK_QUESTIONS[step]?.options || null, fallback: true })
       }
       return res.status(200).json({ analysis: NEUTRAL_ANALYSIS, fallback: true })
     }
@@ -726,13 +756,33 @@ export default async function handler(req, res) {
 
     if (!content) {
       if (action === 'generate-question') {
-        return res.status(200).json({ question: FALLBACK_QUESTIONS[step], fallback: true })
+        return res.status(200).json({ question: FALLBACK_QUESTIONS[step]?.question || FALLBACK_QUESTIONS[step], options: FALLBACK_QUESTIONS[step]?.options || null, fallback: true })
       }
       return res.status(200).json({ analysis: NEUTRAL_ANALYSIS, fallback: true })
     }
 
     if (action === 'generate-question') {
-      return res.status(200).json({ question: content })
+      // Parse JSON response with question + options
+      try {
+        const cleaned = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()
+        const parsed = JSON.parse(cleaned)
+        if (parsed.question && Array.isArray(parsed.options) && parsed.options.length >= 3) {
+          return res.status(200).json({ question: parsed.question, options: parsed.options.slice(0, 4) })
+        }
+        // If parsing succeeded but format is wrong, use as plain question with fallback options
+        return res.status(200).json({
+          question: parsed.question || content,
+          options: FALLBACK_QUESTIONS[step]?.options || null,
+          fallback: true,
+        })
+      } catch {
+        // If not valid JSON, treat as plain text question with fallback options
+        return res.status(200).json({
+          question: content,
+          options: FALLBACK_QUESTIONS[step]?.options || null,
+          fallback: true,
+        })
+      }
     }
 
     // Parse analysis JSON
@@ -774,7 +824,7 @@ export default async function handler(req, res) {
     console.error('AI insight error:', err)
 
     if (action === 'generate-question') {
-      return res.status(200).json({ question: FALLBACK_QUESTIONS[step], fallback: true })
+      return res.status(200).json({ question: FALLBACK_QUESTIONS[step]?.question || FALLBACK_QUESTIONS[step], options: FALLBACK_QUESTIONS[step]?.options || null, fallback: true })
     }
     return res.status(200).json({ analysis: NEUTRAL_ANALYSIS, fallback: true })
   }

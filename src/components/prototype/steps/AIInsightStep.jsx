@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, MessageSquare, Send } from 'lucide-react'
+import { Sparkles, MessageSquare } from 'lucide-react'
 import { generateQuestion, analyzeResponse } from '../../../services/aiInsight'
-
-const MIN_RESPONSE_LENGTH = 20
+import { Card } from '../../shared/Card'
 
 const LOADING_MESSAGES = {
   first: { generating: 'Thinking about your situation…', analyzing: 'Understanding your perspective…' },
@@ -30,13 +29,12 @@ function LoadingState({ message }) {
 export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
   const insightStep = step
   const [phase, setPhase] = useState(() => {
-    if (answer?.question && answer?.response) return 'asking'
+    if (answer?.question && answer?.response) return 'complete'
     return 'idle'
   })
   const [question, setQuestion] = useState(() => answer?.question || null)
-  const [userResponse, setUserResponse] = useState(() => answer?.response || '')
-  const [error, setError] = useState(null)
-  const textareaRef = useRef(null)
+  const [options, setOptions] = useState(() => answer?.options || null)
+  const [selectedOption, setSelectedOption] = useState(() => answer?.response || null)
   const allAnswersRef = useRef(allAnswers)
   allAnswersRef.current = allAnswers
 
@@ -50,6 +48,7 @@ export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
       const result = await generateQuestion(insightStep, allAnswersRef.current)
       if (!cancelled) {
         setQuestion(result.question)
+        setOptions(result.options || [])
         setPhase('asking')
       }
     }
@@ -59,38 +58,22 @@ export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [insightStep])
 
-  // Focus textarea when question appears
-  useEffect(() => {
-    if (phase === 'asking' && textareaRef.current) {
-      const timer = setTimeout(() => textareaRef.current?.focus(), 300)
-      return () => clearTimeout(timer)
-    }
-  }, [phase])
-
-  const handleSubmit = async () => {
-    if (userResponse.trim().length < MIN_RESPONSE_LENGTH) return
-
+  const handleOptionClick = async (option) => {
+    setSelectedOption(option)
     setPhase('analyzing')
-    const { analysis } = await analyzeResponse(insightStep, allAnswers, question, userResponse.trim())
+
+    const { analysis } = await analyzeResponse(insightStep, allAnswers, question, option)
 
     const result = {
       question,
-      response: userResponse.trim(),
+      options,
+      response: option,
       analysis,
     }
 
     setPhase('complete')
     onSelect(result)
   }
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault()
-      handleSubmit()
-    }
-  }
-
-  const isResponseValid = userResponse.trim().length >= MIN_RESPONSE_LENGTH
 
   return (
     <div>
@@ -101,10 +84,10 @@ export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
       </h2>
       <p className="text-[#7A7A7A] mb-6">
         {insightStep === 'first'
-          ? 'Your numbers tell part of the story. Help us understand the person behind them.'
+          ? 'Help us understand the person behind the numbers.'
           : insightStep === 'third'
-            ? 'Numbers and choices only go so far. Let\u2019s see how you\u2019d handle a scenario built from your actual situation.'
-            : 'Before we build your portfolio, we want to make sure we understand what matters most to you.'}
+            ? 'Let\u2019s see how you\u2019d handle a real scenario.'
+            : 'Before we build your portfolio, one more thing.'}
       </p>
 
       <AnimatePresence mode="popLayout">
@@ -133,44 +116,26 @@ export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
               </div>
             </div>
 
-            {/* User response area */}
-            <div className="pl-11">
-              <textarea
-                ref={textareaRef}
-                value={userResponse}
-                onChange={e => setUserResponse(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Share your thoughts…"
-                rows={4}
-                className="w-full px-5 py-4 bg-white border-2 border-[#E5E5DD] rounded-2xl text-sm leading-relaxed resize-none transition-colors duration-200 focus:outline-none focus:border-[#028E53] placeholder:text-[#B9B9AF]"
-              />
-
-              <div className="flex items-center justify-between mt-3">
-                <p className={`text-xs transition-colors duration-200 ${
-                  isResponseValid ? 'text-[#028E53]' : 'text-[#B9B9AF]'
-                }`}>
-                  {isResponseValid
-                    ? 'Ready to continue'
-                    : `Write a bit more (${Math.max(0, MIN_RESPONSE_LENGTH - userResponse.trim().length)} chars needed)`}
-                </p>
-
-                <button
-                  onClick={handleSubmit}
-                  disabled={!isResponseValid}
-                  className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                    isResponseValid
-                      ? 'bg-black text-white hover:bg-[#333] shadow-sm'
-                      : 'bg-[#E5E5DD] text-[#B9B9AF] cursor-not-allowed'
-                  }`}
+            {/* Multiple choice options */}
+            <div className="pl-11 flex flex-col gap-3 max-w-lg">
+              {(options || []).map((option, i) => (
+                <Card
+                  key={i}
+                  hover
+                  selected={selectedOption === option}
+                  onClick={() => handleOptionClick(option)}
+                  className="px-5 py-4 cursor-pointer"
                 >
-                  <Send className="w-4 h-4" />
-                  Continue
-                </button>
-              </div>
-
-              {error && (
-                <p className="text-xs text-red-500 mt-2">{error}</p>
-              )}
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm leading-relaxed">{option}</p>
+                    <div className={`w-4 h-4 rounded-full border-2 transition-all shrink-0 ${
+                      selectedOption === option
+                        ? 'border-black bg-black'
+                        : 'border-[#B9B9AF]'
+                    }`} />
+                  </div>
+                </Card>
+              ))}
             </div>
           </motion.div>
         )}
