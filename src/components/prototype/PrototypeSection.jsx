@@ -6,7 +6,8 @@ import { Button } from '../shared/Button'
 import { ProgressBar } from './ProgressBar'
 import { GoalStep } from './steps/GoalStep'
 import { GoalFollowUpStep } from './steps/GoalFollowUpStep'
-import { FinancialPictureStep } from './steps/FinancialPictureStep'
+import { FinancialMiniSteps } from './steps/FinancialMiniSteps'
+import { AIPortfolioAdvisorStep } from './steps/AIPortfolioAdvisorStep'
 import { TimelineStep } from './steps/TimelineStep'
 import { RiskStep } from './steps/RiskStep'
 import { RiskDeepDivePrompt, RiskDeepDive } from './steps/RiskDeepDive'
@@ -24,12 +25,13 @@ const AUTO_ADVANCE_STEPS = new Set([
   'account-type', 'investment-style', 'goal-conditional',
   'existing-holdings', 'fomo-reaction', 'income-draw',
   'ai-insight-1', 'ai-insight-2', 'ai-insight-3',
+  'ai-insight-early', 'ai-portfolio-advisor',
 ])
 
 // Steps that need a Next / submit button
-const NEEDS_NEXT = new Set(['deep-dive', 'preferences', 'financial-picture', 'themes'])
+const NEEDS_NEXT = new Set(['deep-dive', 'preferences', 'themes'])
 
-function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit }) {
+function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit, goNext }) {
   if (!step) return null
 
   switch (step.id) {
@@ -40,13 +42,17 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit })
     case 'risk-preference':
       return <GoalFollowUpStep step={step} answer={answers['risk-preference']} onSelect={v => onSelect('risk-preference', v)} />
     case 'financial-picture':
-      return <FinancialPictureStep step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goal={answers.goal} goalFollowup={answers['goal-followup']} />
+      return <FinancialMiniSteps step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goal={answers.goal} goalFollowup={answers['goal-followup']} riskPreference={answers['risk-preference']} onComplete={goNext} />
     case 'ai-insight-1':
       return <AIInsightStep step="first" answer={answers['ai-insight-1']} onSelect={v => onSelect('ai-insight-1', v)} allAnswers={answers} />
     case 'ai-insight-2':
       return <AIInsightStep step="second" answer={answers['ai-insight-2']} onSelect={v => onSelect('ai-insight-2', v)} allAnswers={answers} />
     case 'ai-insight-3':
       return <AIInsightStep step="third" answer={answers['ai-insight-3']} onSelect={v => onSelect('ai-insight-3', v)} allAnswers={answers} />
+    case 'ai-insight-early':
+      return <AIInsightStep step="early" answer={answers['ai-insight-early']} onSelect={v => onSelect('ai-insight-early', v)} allAnswers={answers} />
+    case 'ai-portfolio-advisor':
+      return <AIPortfolioAdvisorStep answer={answers['ai-portfolio-advisor']} onSelect={v => onSelect('ai-portfolio-advisor', v)} allAnswers={answers} />
     case 'account-type':
       return <GoalFollowUpStep step={step} answer={answers['account-type']} onSelect={v => onSelect('account-type', v)} />
     case 'goal-conditional':
@@ -103,6 +109,8 @@ export function PrototypeSection() {
       'ai-insight-1': q.answers['ai-insight-1'],
       'ai-insight-2': q.answers['ai-insight-2'],
       'ai-insight-3': q.answers['ai-insight-3'],
+      'ai-insight-early': q.answers['ai-insight-early'],
+      'ai-portfolio-advisor': q.answers['ai-portfolio-advisor'],
       themes: q.answers.themes,
     })
   }, [q.showResults, q.answers])
@@ -230,6 +238,7 @@ export function PrototypeSection() {
                 onSelect={handleSelect}
                 handleDeepDiveChoice={q.handleDeepDiveChoice}
                 onEdit={handleEdit}
+                goNext={q.goNext}
               />
             </motion.div>
 

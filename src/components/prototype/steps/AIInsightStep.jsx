@@ -5,6 +5,7 @@ import { generateQuestion, analyzeResponse } from '../../../services/aiInsight'
 import { Card } from '../../shared/Card'
 
 const LOADING_MESSAGES = {
+  early: { generating: 'Getting to know you…', analyzing: 'Noting that down…' },
   first: { generating: 'Thinking about your situation…', analyzing: 'Understanding your perspective…' },
   second: { generating: 'Reviewing your full profile…', analyzing: 'Synthesizing your priorities…' },
   third: { generating: 'Building a scenario from your profile…', analyzing: 'Calibrating your risk posture…' },
@@ -78,12 +79,15 @@ export function AIInsightStep({ step, answer, onSelect, allAnswers }) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-2">
-        {insightStep === 'first' ? 'Let\u2019s go a bit deeper'
+        {insightStep === 'early' ? 'Before we dig into numbers\u2026'
+          : insightStep === 'first' ? 'Let\u2019s go a bit deeper'
           : insightStep === 'third' ? 'Let\u2019s make this real'
           : 'One last question'}
       </h2>
       <p className="text-[#7A7A7A] mb-6">
-        {insightStep === 'first'
+        {insightStep === 'early'
+          ? 'We noticed something interesting about your choices so far.'
+          : insightStep === 'first'
           ? 'Help us understand the person behind the numbers.'
           : insightStep === 'third'
             ? 'Let\u2019s see how you\u2019d handle a real scenario.'

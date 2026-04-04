@@ -28,6 +28,13 @@ export const STEPS = [
     ],
   },
   {
+    id: "ai-insight-early",
+    title: "Before we dig into numbers\u2026",
+    description: "We noticed something interesting about your choices so far.",
+    type: "ai-insight",
+    insightStep: "early",
+  },
+  {
     id: "financial-picture",
     title: "Your Financial Picture",
     description: "Adjust the sliders — watch your projection update live.",
@@ -153,6 +160,12 @@ export const STEPS = [
     description: "Before we build your portfolio, we want to make sure we understand what matters most to you.",
     type: "ai-insight",
     insightStep: "second",
+  },
+  {
+    id: "ai-portfolio-advisor",
+    title: "Your AI Advisor",
+    description: "We\u2019re analyzing everything you\u2019ve told us to find your ideal portfolio.",
+    type: "ai-portfolio-advisor",
   },
   {
     id: "deep-dive-prompt",

@@ -1,4 +1,13 @@
 const FALLBACK_QUESTIONS = {
+  early: {
+    question: "You've chosen your goal and how you feel about risk. What's the one thing you most want us to get right?",
+    options: [
+      "Don't let me lose what I already have",
+      "Help me grow faster than I could on my own",
+      "Keep it simple \u2014 I don't want to think about it",
+      "Make sure I'm not making an emotional mistake"
+    ]
+  },
   first: {
     question: "What's the one money decision that still keeps you up at night — or the one you're most proud of?",
     options: [

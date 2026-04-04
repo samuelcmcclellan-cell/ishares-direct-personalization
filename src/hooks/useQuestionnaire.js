@@ -73,6 +73,8 @@ export function useQuestionnaire() {
         delete next['ai-insight-1']
         delete next['ai-insight-2']
         delete next['ai-insight-3']
+        delete next['ai-insight-early']
+        delete next['ai-portfolio-advisor']
       }
       return next
     })

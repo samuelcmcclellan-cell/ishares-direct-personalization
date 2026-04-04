@@ -155,10 +155,11 @@ function buildExplanations(answers, riskScore) {
   }
 
   // AI behavioral insights — surface when they meaningfully shifted the result
+  const aiE = answers['ai-insight-early']
   const ai1 = answers['ai-insight-1']
   const ai2 = answers['ai-insight-2']
   const ai3 = answers['ai-insight-3']
-  const totalAiModifier = (ai1?.analysis?.riskModifier || 0) + (ai2?.analysis?.riskModifier || 0) + (ai3?.analysis?.riskModifier || 0)
+  const totalAiModifier = (aiE?.analysis?.riskModifier || 0) * 0.5 + (ai1?.analysis?.riskModifier || 0) + (ai2?.analysis?.riskModifier || 0) + (ai3?.analysis?.riskModifier || 0)
 
   if (Math.abs(totalAiModifier) >= 1.5) {
     // AI had a significant influence — show a prominent explanation
@@ -189,6 +190,7 @@ function buildExplanations(answers, riskScore) {
 
   // Detected behavioral biases
   const allBiases = [
+    ...(aiE?.analysis?.detectedBiases || []),
     ...(ai1?.analysis?.detectedBiases || []),
     ...(ai2?.analysis?.detectedBiases || []),
     ...(ai3?.analysis?.detectedBiases || []),
@@ -275,10 +277,11 @@ export function matchPortfolio(answers) {
   const implicitIncome = drawSignal === 'regular' && !preferences.income
 
   // Extract profileNarrative from AI insights (prefer third for behavioral archetype, then second, then first)
+  const aiE = answers['ai-insight-early']
   const ai1 = answers['ai-insight-1']
   const ai2 = answers['ai-insight-2']
   const ai3 = answers['ai-insight-3']
-  const profileNarrative = ai3?.analysis?.profileNarrative || ai2?.analysis?.profileNarrative || ai1?.analysis?.profileNarrative || null
+  const profileNarrative = ai3?.analysis?.profileNarrative || ai2?.analysis?.profileNarrative || ai1?.analysis?.profileNarrative || aiE?.analysis?.profileNarrative || null
 
   // Stickiness factor for tiebreaking — negative means break ties conservative
   const stickiness1 = ai1?.analysis?.stickinessFactor ?? 0
@@ -286,12 +289,30 @@ export function matchPortfolio(answers) {
   const stickiness3 = ai3?.analysis?.stickinessFactor ?? 0
   const avgStickiness = (stickiness1 + stickiness2 + stickiness3) / 3
 
-  const result = (portfolio) => ({
+  const result = (portfolio, overrideNarrative) => ({
     portfolio: applyThemeOverlays(portfolio, themes),
     riskScore,
     explanations,
-    profileNarrative,
+    profileNarrative: overrideNarrative || profileNarrative,
   })
+
+  // AI Portfolio Advisor override
+  const aiAdvisor = answers['ai-portfolio-advisor']
+  if (aiAdvisor?.recommendedPortfolioId) {
+    const aiPortfolio = PORTFOLIOS.find(p => p.id === aiAdvisor.recommendedPortfolioId)
+    if (aiPortfolio) {
+      if (aiAdvisor.primaryReason) {
+        explanations.unshift({ icon: 'Brain', text: aiAdvisor.primaryReason })
+      }
+      if (aiAdvisor.secondaryReasons) {
+        aiAdvisor.secondaryReasons.forEach(r => explanations.push({ icon: 'Sparkles', text: r }))
+      }
+      if (Math.abs(aiPortfolio.riskScore - riskScore) > 2 && aiAdvisor.riskAdjustmentReason && aiAdvisor.riskAdjustmentReason !== 'N/A') {
+        explanations.push({ icon: 'Brain', text: `Risk adjustment: ${aiAdvisor.riskAdjustmentReason}` })
+      }
+      return result(aiPortfolio, aiAdvisor.narrativeSummary)
+    }
+  }
 
   // 1. Near-term capital preservation auto-trigger
   if ((goal === 'home' || goal === 'education' || goal === 'emergency') && timeline === 'under-2') {

@@ -70,6 +70,15 @@ export function ResultsView({ portfolio, riskScore, explanations, profileNarrati
           </div>
         )}
 
+        {answers?.['ai-portfolio-advisor']?.behavioralWarning && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+              <p className="text-xs text-amber-800 leading-relaxed">{answers['ai-portfolio-advisor'].behavioralWarning}</p>
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-wrap items-center gap-6">
           <div>
             <div className="text-xs text-[#B9B9AF] mb-1">Risk Profile</div>

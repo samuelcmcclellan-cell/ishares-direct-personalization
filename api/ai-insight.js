@@ -1,4 +1,13 @@
 const FALLBACK_QUESTIONS = {
+  early: {
+    question: "You've chosen your goal and how you feel about risk. What's the one thing you most want us to get right?",
+    options: [
+      "Don't let me lose what I already have",
+      "Help me grow faster than I could on my own",
+      "Keep it simple \u2014 I don't want to think about it",
+      "Make sure I'm not making an emotional mistake"
+    ]
+  },
   first: {
     question: "What's the one money decision that still keeps you up at night — or the one you're most proud of?",
     options: [
@@ -64,6 +73,26 @@ function computeProfileObservations(answers, step) {
   const fomoScore = answers['fomo-reaction']?.fomoScore
   const drawSignal = answers['income-draw']?.drawSignal
   const followupId = answers['goal-followup']?.id
+
+  // ── Early step (minimal data) ──
+  if (step === 'early') {
+    if (goalId === 'retirement' && followupId === 'under-30' && riskPrefId >= 5) {
+      observations.push({ id: 'AMBITIOUS_YOUNG_SAVER', severity: 'medium', summary: 'Young investor pursuing retirement with maximum growth preference', hook: 'Ambitious and young \u2014 what drives such aggressive growth ambitions? Informed conviction or youthful optimism?' })
+    }
+    if (goalId === 'emergency' && riskPrefId >= 4) {
+      observations.push({ id: 'EMERGENCY_AGGRESSIVE', severity: 'high', summary: 'Building an emergency fund but prefers aggressive growth', hook: 'Emergency funds need stability, but they want growth \u2014 is the real goal not an emergency fund?' })
+    }
+    if (goalId === 'income' && (followupId === 'under-30' || followupId === '30-39')) {
+      observations.push({ id: 'INCOME_YOUNG_EARLY', severity: 'medium', summary: 'Young investor seeking income generation', hook: 'Why income focus at a young age? Near-term cash flow need or philosophical preference?' })
+    }
+    if (riskPrefId <= 1) {
+      observations.push({ id: 'PRESERVE_EARLY', severity: 'medium', summary: `Preservation-first mindset for ${goalId || 'investing'} goal`, hook: 'Maximum caution \u2014 what experience or concern drives this? Wisdom or worry?' })
+    }
+    if (goalId && riskPrefId >= 4 && (followupId === 'under-30' || followupId === '30-39')) {
+      observations.push({ id: 'YOUNG_AGGRESSIVE_EARLY', severity: 'medium', summary: `Young and aggressive: ${goalId} goal with ${riskPrefId}/5 growth preference`, hook: 'Growth-hungry and young \u2014 have they thought about how a real downturn feels?' })
+    }
+    return observations
+  }
 
   // ── Tension detectors (contradictions) ──
 
@@ -404,6 +433,13 @@ const TECHNIQUES = [
 ]
 
 function pickAngleCombination(step, observations) {
+  // Early step uses a reduced category set
+  if (step === 'early') {
+    const earlyCategories = FIRST_CATEGORIES.filter(c => ['money-origin', 'financial-identity', 'scarcity-abundance', 'control-trust'].includes(c.id))
+    const category = earlyCategories[Math.floor(Math.random() * earlyCategories.length)]
+    const technique = TECHNIQUES[Math.floor(Math.random() * TECHNIQUES.length)]
+    return { category, technique }
+  }
   // Third step uses its own prompt logic (scenario-based), but we still pick an angle for fallback compatibility
   const categories = step === 'first' ? FIRST_CATEGORIES : SECOND_CATEGORIES
   const highSeverity = observations.filter(o => o.severity === 'high')
@@ -490,6 +526,31 @@ RESPONSE FORMAT: Return a JSON object with "question" (string, max 35 words) and
 
 Example:
 {"question":"Your portfolio is down 25% and still falling. Your partner wants to sell everything. What do you tell them?","options":["They're right — let's get out before it gets worse","Let's wait a month and reassess","We stick to the plan — this is temporary","I actually want to invest more while it's cheap"]}
+
+Return ONLY valid JSON.
+${guardrails}`
+    }
+
+    if (step === 'early') {
+      return `You are an intake assistant for a portfolio recommendation tool at BlackRock's iShares Direct Personalization platform. You have VERY limited information about this investor so far \u2014 just their goal, age range, and growth-vs-stability preference. Your job is to ask ONE question (max 25 words) that reveals something the numbers can't \u2014 their emotional relationship with money, a past experience, or a hidden priority. Keep it warm and conversational.
+
+INVESTOR PROFILE:
+${userProfile}
+
+OBSERVATIONS:
+${observationsBlock}
+
+QUESTION APPROACH:
+Category: ${angle.category.label} \u2014 ${angle.category.desc}
+Technique: ${angle.technique.label} \u2014 ${angle.technique.desc}
+
+HARD REQUIREMENTS:
+1. MAXIMUM 25 WORDS. Count them.
+2. The question must feel personalized to their goal and risk stance.
+3. No preamble. Start with the question or scenario.
+4. Warm and conversational tone \u2014 you're getting to know them.
+
+RESPONSE FORMAT: Return a JSON object with "question" (string, max 25 words) and "options" (array of exactly 4 short answer strings, each max 15 words).
 
 Return ONLY valid JSON.
 ${guardrails}`
@@ -747,13 +808,14 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: action === 'generate-question' ? 'gpt-4.1-nano' : 'gpt-4.1-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage },
         ],
         temperature: action === 'generate-question' ? 0.95 : 0.4,
         max_tokens: action === 'generate-question' ? 200 : 500,
+        response_format: { type: 'json_object' },
       }),
     })
 

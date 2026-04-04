@@ -76,6 +76,14 @@ export function computeRiskScore(answers) {
 
   // AI insight modifiers (wider range: ±2.5 each, ±5.0 combined)
   // Dampen by confidenceLevel when low (<0.3 halves the modifier)
+  // Early AI insight (dampened by 0.5 due to minimal data)
+  const aiInsightEarly = answers['ai-insight-early']
+  if (aiInsightEarly?.analysis?.riskModifier) {
+    const confEarly = aiInsightEarly.analysis.confidenceLevel ?? 0.3
+    const dampenEarly = (confEarly < 0.3 ? 0.5 : 1.0) * 0.5
+    modifier += aiInsightEarly.analysis.riskModifier * dampenEarly
+  }
+
   const aiInsight1 = answers['ai-insight-1']
   if (aiInsight1?.analysis?.riskModifier) {
     const conf1 = aiInsight1.analysis.confidenceLevel ?? 0.5
