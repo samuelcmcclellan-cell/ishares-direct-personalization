@@ -37,7 +37,7 @@ export const STEPS = [
   {
     id: "financial-picture",
     title: "Your Financial Picture",
-    description: "Adjust the sliders — watch your projection update live.",
+    description: "Tell us about your financial situation.",
     type: "financial-picture",
   },
   {

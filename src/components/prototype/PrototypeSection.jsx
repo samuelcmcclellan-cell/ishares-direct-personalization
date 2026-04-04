@@ -42,7 +42,7 @@ function StepRenderer({ step, answers, onSelect, handleDeepDiveChoice, onEdit, g
     case 'risk-preference':
       return <GoalFollowUpStep step={step} answer={answers['risk-preference']} onSelect={v => onSelect('risk-preference', v)} />
     case 'financial-picture':
-      return <FinancialMiniSteps step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goal={answers.goal} goalFollowup={answers['goal-followup']} riskPreference={answers['risk-preference']} onComplete={goNext} />
+      return <FinancialMiniSteps step={step} answer={answers['financial-picture']} onSelect={v => onSelect('financial-picture', v)} goal={answers.goal} goalFollowup={answers['goal-followup']} onComplete={goNext} />
     case 'ai-insight-1':
       return <AIInsightStep step="first" answer={answers['ai-insight-1']} onSelect={v => onSelect('ai-insight-1', v)} allAnswers={answers} />
     case 'ai-insight-2':

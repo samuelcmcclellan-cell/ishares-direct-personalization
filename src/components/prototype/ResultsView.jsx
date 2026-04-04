@@ -3,6 +3,8 @@ import { ArrowLeft, RotateCcw, Target, Clock, Shield, TrendingUp, Receipt, Globe
 import { PortfolioPieChart } from './PortfolioPieChart'
 import { HoldingsTable } from './HoldingsTable'
 import { RiskRadarChart } from './RiskRadarChart'
+import { MonteCarloProjectionChart } from './MonteCarloProjectionChart'
+import { getExpectedReturn } from '../../logic/projectionUtils'
 import { Button } from '../shared/Button'
 
 const RISK_COLORS = {
@@ -43,6 +45,9 @@ const ICON_MAP = {
 
 export function ResultsView({ portfolio, riskScore, explanations, profileNarrative, onReset, answers }) {
   if (!portfolio) return null
+
+  const financialData = answers?.['financial-picture']
+  const expectedReturn = getExpectedReturn(portfolio)
 
   return (
     <motion.div
@@ -154,6 +159,18 @@ export function ResultsView({ portfolio, riskScore, explanations, profileNarrati
           </div>
         </div>
       </div>
+
+      {financialData && (
+        <div className="bg-[#F5F5EB] border border-[#E5E5DD] rounded-2xl p-6 mb-8">
+          <MonteCarloProjectionChart
+            financialData={financialData}
+            expectedReturn={expectedReturn}
+            goalId={answers?.goal?.id}
+            portfolioName={portfolio.name}
+            riskLabel={portfolio.riskLabel}
+          />
+        </div>
+      )}
 
       <div className="bg-white border border-[#E5E5DD] rounded-2xl p-6 mb-8">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-[#7A7A7A] mb-4">Portfolio Holdings</h3>
