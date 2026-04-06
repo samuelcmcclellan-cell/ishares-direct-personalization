@@ -29,6 +29,11 @@ export function PasswordGate({ children }) {
               Direct Personalization
             </span>
           </div>
+          <div className="mt-2.5">
+            <span className="text-[9px] tracking-wider uppercase text-[#B9B9AF] border border-[#E5E5DD] px-2 py-0.5 rounded-full">
+              Experimental Prototype
+            </span>
+          </div>
         </div>
 
         <p className="text-sm text-[#7A7A7A] mb-6">
@@ -56,9 +61,14 @@ export function PasswordGate({ children }) {
           </button>
         </form>
 
-        <p className="mt-6 text-[10px] text-[#B9B9AF]">
-          Internal use only — not for distribution
-        </p>
+        <div className="mt-6 space-y-1">
+          <p className="text-[10px] text-[#B9B9AF]">
+            Built by Sam McClellan with Claude Opus 4.6
+          </p>
+          <p className="text-[10px] text-[#B9B9AF]">
+            Internal use only — not for distribution
+          </p>
+        </div>
       </div>
     </div>
   )
